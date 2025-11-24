@@ -13,9 +13,23 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, '../public'))); // Serve static files from public folder
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/the-ras-ecommerce')
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch((error) => console.error('❌ MongoDB connection error:', error));
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI || MONGODB_URI.includes('localhost')) {
+  console.log('⚠️  WARNING: No MongoDB connection configured!');
+  console.log('📝 To fix this:');
+  console.log('   1. Get a FREE database at https://mongodb.com/cloud/atlas');
+  console.log('   2. Add your connection string to the MONGODB_URI environment variable');
+  console.log('   3. Restart the application\n');
+  console.log('🚀 Server will run, but database features won\'t work until connected.\n');
+} else {
+  mongoose.connect(MONGODB_URI)
+    .then(() => console.log('✅ Connected to MongoDB'))
+    .catch((error) => {
+      console.error('❌ MongoDB connection error:', error.message);
+      console.log('💡 Check your MONGODB_URI environment variable');
+    });
+}
 
 // Import routes
 const authRoutes = require('./routes/auth');

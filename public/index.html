@@ -141,7 +141,10 @@
         `).join('');
       } catch (error) {
         console.error('Error loading categories:', error);
-        document.getElementById('categoryGrid').innerHTML = '<p>Error loading categories</p>';
+        const errorMsg = error.message.includes('Database not connected') 
+          ? '⚠️ Database not connected. Please set up MongoDB Atlas to see products.' 
+          : 'Error loading categories';
+        document.getElementById('categoryGrid').innerHTML = `<p>${errorMsg}</p>`;
       }
     }
 
@@ -172,7 +175,19 @@
         `).join('');
       } catch (error) {
         console.error('Error loading products:', error);
-        document.getElementById('productGrid').innerHTML = '<p>Error loading products</p>';
+        const errorMsg = error.message.includes('Database not connected')
+          ? `<div style="text-align: center; padding: 40px;">
+               <h3>⚠️ Database Not Connected</h3>
+               <p>To use this e-commerce app, you need to connect a database:</p>
+               <ol style="text-align: left; max-width: 500px; margin: 20px auto;">
+                 <li>Get a FREE MongoDB database at <a href="https://mongodb.com/cloud/atlas" target="_blank">mongodb.com/cloud/atlas</a></li>
+                 <li>Copy your connection string</li>
+                 <li>Add it to the MONGODB_URI environment variable in Secrets</li>
+                 <li>Restart the application</li>
+               </ol>
+             </div>`
+          : '<p>Error loading products. Please check the console for details.</p>';
+        document.getElementById('productGrid').innerHTML = errorMsg;
       }
     }
 

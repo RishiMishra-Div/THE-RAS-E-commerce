@@ -7,6 +7,15 @@ const { auth, isAdmin } = require('../middleware/auth');
 // GET all products (public route)
 router.get('/', async (req, res) => {
   try {
+    const mongoose = require('mongoose');
+    
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ 
+        error: 'Database not connected', 
+        message: 'Please configure MongoDB connection in environment variables' 
+      });
+    }
+    
     const { category } = req.query;
     
     // Filter by category if provided
@@ -22,6 +31,15 @@ router.get('/', async (req, res) => {
 // GET categories (public route) - must be before /:id route to avoid matching "categories" as an ID
 router.get('/categories/list', async (req, res) => {
   try {
+    const mongoose = require('mongoose');
+    
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ 
+        error: 'Database not connected', 
+        message: 'Please configure MongoDB connection in environment variables' 
+      });
+    }
+    
     const categories = await Product.distinct('category');
     res.json(categories);
   } catch (error) {
@@ -32,6 +50,15 @@ router.get('/categories/list', async (req, res) => {
 // GET single product by ID (public route)
 router.get('/:id', async (req, res) => {
   try {
+    const mongoose = require('mongoose');
+    
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ 
+        error: 'Database not connected', 
+        message: 'Please configure MongoDB connection in environment variables' 
+      });
+    }
+    
     const product = await Product.findById(req.params.id);
     
     if (!product) {
