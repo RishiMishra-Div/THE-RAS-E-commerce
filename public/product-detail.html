@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - THE RAS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin: 40px 0;
+    }
+    
+    .product-detail-image {
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .product-detail-info h1 {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    
+    .product-detail-price {
+      font-size: 36px;
+      color: #9333EA;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .product-detail-category {
+      display: inline-block;
+      background: #F3F4F6;
+      padding: 6px 16px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #6B7280;
+    }
+    
+    .product-detail-description {
+      line-height: 1.8;
+      margin-bottom: 24px;
+      color: #4B5563;
+    }
+    
+    .product-detail-stock {
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    
+    .product-detail-stock.in-stock {
+      color: #10B981;
+    }
+    
+    .product-detail-stock.out-of-stock {
+      color: #EF4444;
+    }
+    
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #E5E7EB;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: all 0.3s;
+    }
+    
+    .quantity-btn:hover {
+      border-color: #9333EA;
+      color: #9333EA;
+    }
+    
+    .quantity-value {
+      font-size: 20px;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .add-to-cart-large {
+      width: 100%;
+      padding: 16px;
+      font-size: 18px;
+    }
+    
+    @media (max-width: 768px) {
+      .product-detail {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">THE RAS</a>
+      
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+      </div>
+      
+      <div class="header-actions">
+        <a href="/cart" class="cart-icon">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <a href="/login" class="btn btn-primary" id="authBtn">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Product Detail Section -->
+  <section class="section">
+    <div class="container">
+      <div id="productDetail">
+        <div class="loading">Loading product details...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About THE RAS</h3>
+          <p>Your trusted online shopping destination for quality products.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Shop</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/login">Account</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Policies</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="#">📘</a>
+            <a href="#">📷</a>
+            <a href="#">🐦</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 THE RAS. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/cart.js"></script>
+  <script>
+    let currentProduct = null;
+    let quantity = 1;
+
+    // Get product ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    // Load product details
+    async function loadProductDetails() {
+      if (!productId) {
+        document.getElementById('productDetail').innerHTML = '<p>Product not found</p>';
+        return;
+      }
+
+      try {
+        currentProduct = await getProduct(productId);
+        displayProduct();
+      } catch (error) {
+        console.error('Error loading product:', error);
+        document.getElementById('productDetail').innerHTML = '<p>Error loading product details</p>';
+      }
+    }
+
+    // Display product
+    function displayProduct() {
+      const stockStatus = currentProduct.stock > 0 ? 
+        `<div class="product-detail-stock in-stock">✓ In Stock (${currentProduct.stock} available)</div>` :
+        `<div class="product-detail-stock out-of-stock">✗ Out of Stock</div>`;
+
+      document.getElementById('productDetail').innerHTML = `
+        <div class="product-detail">
+          <div>
+            <img src="${currentProduct.image}" alt="${currentProduct.title}" class="product-detail-image">
+          </div>
+          
+          <div class="product-detail-info">
+            <h1>${currentProduct.title}</h1>
+            <div class="product-detail-category">${currentProduct.category}</div>
+            <div class="product-detail-price">$${currentProduct.price.toFixed(2)}</div>
+            <div class="product-rating">⭐⭐⭐⭐⭐</div>
+            
+            ${stockStatus}
+            
+            <p class="product-detail-description">${currentProduct.description}</p>
+            
+            <div class="quantity-selector">
+              <button class="quantity-btn" onclick="decreaseQuantity()">−</button>
+              <div class="quantity-value" id="quantityValue">1</div>
+              <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+            </div>
+            
+            <button 
+              class="add-to-cart add-to-cart-large" 
+              onclick="handleAddToCart()"
+              ${currentProduct.stock === 0 ? 'disabled' : ''}
+            >
+              ${currentProduct.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Update page title
+      document.title = `${currentProduct.title} - THE RAS`;
+    }
+
+    // Increase quantity
+    function increaseQuantity() {
+      if (quantity < currentProduct.stock) {
+        quantity++;
+        document.getElementById('quantityValue').textContent = quantity;
+      }
+    }
+
+    // Decrease quantity
+    function decreaseQuantity() {
+      if (quantity > 1) {
+        quantity--;
+        document.getElementById('quantityValue').textContent = quantity;
+      }
+    }
+
+    // Handle add to cart
+    function handleAddToCart() {
+      for (let i = 0; i < quantity; i++) {
+        addToCart(currentProduct);
+      }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const searchTerm = e.target.value;
+        if (searchTerm) {
+          window.location.href = `/products?search=${encodeURIComponent(searchTerm)}`;
+        }
+      }
+    });
+
+    // Update auth button
+    function updateAuthButton() {
+      const authBtn = document.getElementById('authBtn');
+      const user = getCurrentUser();
+      
+      if (user) {
+        authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
+        authBtn.href = user.role === 'admin' ? '/admin' : '#';
+        
+        if (user.role !== 'admin') {
+          authBtn.onclick = () => {
+            if (confirm('Do you want to logout?')) {
+              logout();
+            }
+            return false;
+          };
+        }
+      }
+    }
+
+    // Initialize page
+    updateAuthButton();
+    loadProductDetails();
+  </script>
+</body>
+</html>

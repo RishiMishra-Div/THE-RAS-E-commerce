@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - THE RAS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .filter-section {
+      margin-bottom: 32px;
+      padding: 20px;
+      background: #F9FAFB;
+      border-radius: 12px;
+    }
+    
+    .filter-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      padding: 8px 20px;
+      border: 2px solid #E5E7EB;
+      background: white;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    
+    .filter-btn:hover {
+      border-color: #9333EA;
+    }
+    
+    .filter-btn.active {
+      background: #9333EA;
+      color: white;
+      border-color: #9333EA;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">THE RAS</a>
+      
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+      </div>
+      
+      <div class="header-actions">
+        <a href="/cart" class="cart-icon">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <a href="/login" class="btn btn-primary" id="authBtn">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Products Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">All Products</h2>
+      
+      <!-- Category Filter -->
+      <div class="filter-section">
+        <h3>Filter by Category</h3>
+        <div class="filter-buttons" id="categoryFilters">
+          <button class="filter-btn active" data-category="">All</button>
+        </div>
+      </div>
+      
+      <!-- Products Grid -->
+      <div class="product-grid" id="productGrid">
+        <div class="loading">Loading products...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About THE RAS</h3>
+          <p>Your trusted online shopping destination for quality products.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Shop</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/login">Account</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Policies</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="#">📘</a>
+            <a href="#">📷</a>
+            <a href="#">🐦</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 THE RAS. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/cart.js"></script>
+  <script>
+    let allProducts = [];
+    let currentCategory = '';
+    let searchTerm = '';
+
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    currentCategory = urlParams.get('category') || '';
+    searchTerm = urlParams.get('search') || '';
+
+    // Load all products
+    async function loadProducts() {
+      try {
+        allProducts = await getProducts();
+        
+        // Get unique categories
+        const categories = [...new Set(allProducts.map(p => p.category))];
+        
+        // Render category filters
+        const filterButtons = document.getElementById('categoryFilters');
+        categories.forEach(category => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-btn' + (category === currentCategory ? ' active' : '');
+          btn.textContent = category;
+          btn.dataset.category = category;
+          btn.onclick = () => filterByCategory(category);
+          filterButtons.appendChild(btn);
+        });
+        
+        // Set search input value
+        if (searchTerm) {
+          document.getElementById('searchInput').value = searchTerm;
+        }
+        
+        // Display products
+        displayProducts();
+      } catch (error) {
+        console.error('Error loading products:', error);
+        document.getElementById('productGrid').innerHTML = '<p>Error loading products</p>';
+      }
+    }
+
+    // Display products based on filters
+    function displayProducts() {
+      let filtered = allProducts;
+      
+      // Filter by category
+      if (currentCategory) {
+        filtered = filtered.filter(p => p.category === currentCategory);
+      }
+      
+      // Filter by search term
+      if (searchTerm) {
+        filtered = filtered.filter(p => 
+          p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+      
+      const productGrid = document.getElementById('productGrid');
+      
+      if (filtered.length === 0) {
+        productGrid.innerHTML = '<p>No products found</p>';
+        return;
+      }
+      
+      productGrid.innerHTML = filtered.map(product => `
+        <div class="product-card" onclick="window.location.href='/product-detail?id=${product._id}'">
+          <img src="${product.image}" alt="${product.title}" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">${product.title}</h3>
+            <div class="product-price">$${product.price.toFixed(2)}</div>
+            <div class="product-rating">⭐⭐⭐⭐⭐</div>
+            <button class="add-to-cart" onclick="handleAddToCart(event, ${JSON.stringify(product).replace(/"/g, '&quot;')})">
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Filter by category
+    function filterByCategory(category) {
+      currentCategory = category;
+      
+      // Update active button
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.category === category);
+      });
+      
+      // Update URL
+      const url = new URL(window.location);
+      if (category) {
+        url.searchParams.set('category', category);
+      } else {
+        url.searchParams.delete('category');
+      }
+      window.history.pushState({}, '', url);
+      
+      displayProducts();
+    }
+
+    // Handle add to cart
+    function handleAddToCart(event, product) {
+      event.stopPropagation();
+      addToCart(product);
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchTerm = e.target.value;
+      displayProducts();
+    });
+
+    // Update auth button
+    function updateAuthButton() {
+      const authBtn = document.getElementById('authBtn');
+      const user = getCurrentUser();
+      
+      if (user) {
+        authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
+        authBtn.href = user.role === 'admin' ? '/admin' : '#';
+        
+        if (user.role !== 'admin') {
+          authBtn.onclick = () => {
+            if (confirm('Do you want to logout?')) {
+              logout();
+            }
+            return false;
+          };
+        }
+      }
+    }
+
+    // Initialize page
+    updateAuthButton();
+    loadProducts();
+  </script>
+</body>
+</html>

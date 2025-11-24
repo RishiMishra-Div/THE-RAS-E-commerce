@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE RAS - Your Modern E-Commerce Store</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">THE RAS</a>
+      
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+      </div>
+      
+      <div class="header-actions">
+        <a href="/cart" class="cart-icon">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <a href="/login" class="btn btn-primary" id="authBtn">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Welcome to THE RAS</h1>
+        <p>Discover amazing products at unbeatable prices</p>
+        <a href="/products" class="btn btn-secondary">Shop Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop by Category Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Shop by Category</h2>
+      <div class="category-grid" id="categoryGrid">
+        <div class="loading">Loading categories...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Featured Products</h2>
+      <div class="product-grid" id="productGrid">
+        <div class="loading">Loading products...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About THE RAS</h3>
+          <p>Your trusted online shopping destination for quality products.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Shop</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/login">Account</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Policies</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="#">📘</a>
+            <a href="#">📷</a>
+            <a href="#">🐦</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 THE RAS. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/cart.js"></script>
+  <script>
+    // Category icons mapping
+    const categoryIcons = {
+      'Electronics': '💻',
+      'Fashion': '👕',
+      'Home & Kitchen': '🏠',
+      'Books': '📚',
+      'Sports': '⚽',
+      'Toys': '🎮',
+      'Beauty': '💄',
+      'Accessories': '⌚'
+    };
+
+    // Load categories
+    async function loadCategories() {
+      try {
+        const products = await getProducts();
+        
+        // Get unique categories from products
+        const categories = [...new Set(products.map(p => p.category))];
+        
+        const categoryGrid = document.getElementById('categoryGrid');
+        
+        if (categories.length === 0) {
+          categoryGrid.innerHTML = '<p>No categories available yet.</p>';
+          return;
+        }
+        
+        categoryGrid.innerHTML = categories.slice(0, 6).map(category => `
+          <a href="/products?category=${encodeURIComponent(category)}" class="category-card">
+            <div class="category-icon">${categoryIcons[category] || '🛍️'}</div>
+            <div class="category-name">${category}</div>
+          </a>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading categories:', error);
+        document.getElementById('categoryGrid').innerHTML = '<p>Error loading categories</p>';
+      }
+    }
+
+    // Load featured products
+    async function loadProducts() {
+      try {
+        const products = await getProducts();
+        const productGrid = document.getElementById('productGrid');
+        
+        if (products.length === 0) {
+          productGrid.innerHTML = '<p>No products available yet. Check back soon!</p>';
+          return;
+        }
+        
+        // Show first 8 products
+        productGrid.innerHTML = products.slice(0, 8).map(product => `
+          <div class="product-card" onclick="window.location.href='/product-detail?id=${product._id}'">
+            <img src="${product.image}" alt="${product.title}" class="product-image">
+            <div class="product-info">
+              <h3 class="product-title">${product.title}</h3>
+              <div class="product-price">$${product.price.toFixed(2)}</div>
+              <div class="product-rating">⭐⭐⭐⭐⭐</div>
+              <button class="add-to-cart" onclick="handleAddToCart(event, ${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading products:', error);
+        document.getElementById('productGrid').innerHTML = '<p>Error loading products</p>';
+      }
+    }
+
+    // Handle add to cart
+    function handleAddToCart(event, product) {
+      event.stopPropagation(); // Prevent navigation to product detail
+      addToCart(product);
+    }
+
+    // Update auth button
+    function updateAuthButton() {
+      const authBtn = document.getElementById('authBtn');
+      const user = getCurrentUser();
+      
+      if (user) {
+        authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
+        authBtn.href = user.role === 'admin' ? '/admin' : '#';
+        
+        if (user.role !== 'admin') {
+          authBtn.onclick = () => {
+            if (confirm('Do you want to logout?')) {
+              logout();
+            }
+            return false;
+          };
+        }
+      }
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      
+      if (searchTerm.length > 0) {
+        window.location.href = `/products?search=${encodeURIComponent(searchTerm)}`;
+      }
+    });
+
+    // Initialize page
+    updateAuthButton();
+    loadCategories();
+    loadProducts();
+  </script>
+</body>
+</html>

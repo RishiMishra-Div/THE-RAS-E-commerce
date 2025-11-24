@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart - THE RAS</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .cart-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      margin: 40px 0;
+    }
+    
+    .cart-items {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cart-item {
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+    
+    .cart-item-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    
+    .cart-item-details h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    
+    .cart-item-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #9333EA;
+      margin-bottom: 12px;
+    }
+    
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border: 2px solid #E5E7EB;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .qty-btn:hover {
+      border-color: #9333EA;
+      color: #9333EA;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    
+    .remove-btn {
+      color: #EF4444;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .remove-btn:hover {
+      text-decoration: underline;
+    }
+    
+    .cart-summary {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      height: fit-content;
+    }
+    
+    .cart-summary h3 {
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    
+    .summary-total {
+      border-top: 2px solid #E5E7EB;
+      padding-top: 16px;
+      margin-top: 16px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    .checkout-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 16px;
+      font-size: 18px;
+    }
+    
+    .empty-cart {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .empty-cart-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .cart-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .cart-item {
+        grid-template-columns: 80px 1fr;
+      }
+      
+      .cart-item-actions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">THE RAS</a>
+      
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search products...">
+      </div>
+      
+      <div class="header-actions">
+        <a href="/cart" class="cart-icon">
+          🛒
+          <span class="cart-count">0</span>
+        </a>
+        <a href="/login" class="btn btn-primary" id="authBtn">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cart Section -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Shopping Cart</h2>
+      <div id="cartContent"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About THE RAS</h3>
+          <p>Your trusted online shopping destination for quality products.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Shop</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/login">Account</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Policies</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="#">📘</a>
+            <a href="#">📷</a>
+            <a href="#">🐦</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 THE RAS. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/cart.js"></script>
+  <script>
+    // Display cart
+    function displayCart() {
+      const cart = getCart();
+      const cartContent = document.getElementById('cartContent');
+      
+      if (cart.length === 0) {
+        cartContent.innerHTML = `
+          <div class="empty-cart">
+            <div class="empty-cart-icon">🛒</div>
+            <h3>Your cart is empty</h3>
+            <p>Add some products to get started!</p>
+            <a href="/products" class="btn btn-primary" style="margin-top: 24px;">Continue Shopping</a>
+          </div>
+        `;
+        return;
+      }
+      
+      const total = getCartTotal();
+      
+      cartContent.innerHTML = `
+        <div class="cart-container">
+          <div class="cart-items">
+            <h3 style="margin-bottom: 20px;">Cart Items (${getCartCount()})</h3>
+            ${cart.map(item => `
+              <div class="cart-item">
+                <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+                
+                <div class="cart-item-details">
+                  <h3>${item.title}</h3>
+                  <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                  <div class="cart-item-quantity">
+                    <button class="qty-btn" onclick="changeQuantity('${item._id}', ${item.quantity - 1})">−</button>
+                    <span>${item.quantity}</span>
+                    <button class="qty-btn" onclick="changeQuantity('${item._id}', ${item.quantity + 1})">+</button>
+                  </div>
+                </div>
+                
+                <div class="cart-item-actions">
+                  <div class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+                  <div class="remove-btn" onclick="removeItem('${item._id}')">Remove</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="cart-summary">
+            <h3>Order Summary</h3>
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span>$${total.toFixed(2)}</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping</span>
+              <span>Free</span>
+            </div>
+            <div class="summary-row summary-total">
+              <span>Total</span>
+              <span>$${total.toFixed(2)}</span>
+            </div>
+            <button class="btn btn-secondary checkout-btn" onclick="proceedToCheckout()">
+              Proceed to Checkout
+            </button>
+            <a href="/products" class="btn btn-outline checkout-btn">
+              Continue Shopping
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    // Change quantity
+    function changeQuantity(productId, newQuantity) {
+      updateQuantity(productId, newQuantity);
+      displayCart();
+    }
+
+    // Remove item
+    function removeItem(productId) {
+      if (confirm('Remove this item from cart?')) {
+        removeFromCart(productId);
+        displayCart();
+      }
+    }
+
+    // Proceed to checkout
+    function proceedToCheckout() {
+      if (!isLoggedIn()) {
+        alert('Please login to proceed to checkout');
+        window.location.href = '/login?redirect=checkout';
+        return;
+      }
+      window.location.href = '/checkout';
+    }
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const searchTerm = e.target.value;
+        if (searchTerm) {
+          window.location.href = `/products?search=${encodeURIComponent(searchTerm)}`;
+        }
+      }
+    });
+
+    // Update auth button
+    function updateAuthButton() {
+      const authBtn = document.getElementById('authBtn');
+      const user = getCurrentUser();
+      
+      if (user) {
+        authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
+        authBtn.href = user.role === 'admin' ? '/admin' : '#';
+        
+        if (user.role !== 'admin') {
+          authBtn.onclick = () => {
+            if (confirm('Do you want to logout?')) {
+              logout();
+            }
+            return false;
+          };
+        }
+      }
+    }
+
+    // Initialize page
+    updateAuthButton();
+    displayCart();
+  </script>
+</body>
+</html>
