@@ -1,0 +1,90 @@
+Create a modern and responsive E-Commerce Home Page design for a multi-category online store.
+
+Include the following sections in correct order:
+1️⃣ Header:
+
+- Left: Logo (text placeholder: MyStore)
+- Center: Search Bar
+- Right: Icons for Cart and Login button
+- Clean, professional style with sticky behavior on scroll
+
+2️⃣ Hero Banner:
+
+- Large promotional banner with product image and “Shop Now” call-to-action button
+- Modern typography and smooth visuals
+- Full-width, high-impact design
+
+3️⃣ Shop by Category Section:
+
+- 4 to 6 category cards
+- Each card has: Category name + Icon/Image
+- Clicking leads to product listing page
+- Grid layout with smooth hover animation
+
+4️⃣ Featured Products Section:
+
+- Display 4 to 8 product cards
+- Each card includes: Product image, title, price, star rating, and Add to Cart button
+- Use consistent card design and shadows for depth
+
+5️⃣ Footer:
+
+- Multi-column layout with sections like About, Contact, Policies, Social Icons
+- Clean and minimal design that matches theme
+
+Design Requirements:
+
+- Friendly and modern UI for learning web development
+- Prioritize user flow and clarity
+- Mobile, tablet, and desktop responsive layout
+- Use consistent color palette: Blue & white primary, gray accents
+- Simple fonts like Poppins or Inter
+- Components spaced well with clean structure
+- Include hover states and interactions for buttons and cards
+
+Output format: High-fidelity UI layout with visual hierarchy and clarity.
+
+---
+
+Design a modern and youthful E-Commerce Home Page for a multi-category store named “THE RAS”.
+
+Follow this brand style:
+
+- Primary: Purple (#9333EA)
+- Secondary: Pink (#F43F5E)
+- Accent: Yellow (#FACC15)
+- Background: White
+- Text: Dark Gray (#1F2937)
+- Logo: THE RAS in bold Poppins, purple color
+
+Typography:
+
+- Headings: Poppins Bold
+- Body: Inter Regular
+
+UI Structure (top to bottom):
+1️⃣ Header: Left Logo “THE RAS”, Center Search Bar, Right Cart & Login
+2️⃣ Full-Width Hero Banner: Trendy product image + Pink “Shop Now” button
+3️⃣ Shop by Category: 4–6 rounded category cards with playful icons
+4️⃣ Featured Products: 4–8 product cards with add-to-cart purple button
+5️⃣ Footer: Purple background, white text, social media icons in yellow
+
+---
+
+Important Design Rules to Apply:
+
+- Use the selected primary color for CTAs like "Add to Cart" and "Shop Now"
+- Maintain consistent spacing (16px–24px) across sections
+- Buttons should be rounded with soft hover animation
+- Use clean typography (Poppins or Inter)
+- Product cards must have slight shadows for elevation
+- Icons should match theme style (minimal strokes for clean look)
+- Make sure design remains fully responsive
+- Overall feel: Professional, user-friendly, and visually balanced
+
+Style Notes:
+
+- Youthful, playful, and clean design
+- Rounded buttons and cards
+- Hover animations (scale and shadow)
+- Fully responsive layout

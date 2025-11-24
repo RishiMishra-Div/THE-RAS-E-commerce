@@ -1,0 +1,73 @@
+You are my coding partner. I am a beginner in web development, so I do not know advanced frontend frameworks like React, Next.js or TypeScript. Build everything using simple HTML, CSS, and JavaScript only. For backend, use Node.js with Express.js and MongoDB (Mongoose).
+
+Goal: Create a full E-Commerce Web Application using my brand:
+Brand Name: THE RAS
+Color Theme:
+- Primary Purple: #9333EA
+- Secondary Pink: #F43F5E
+- Accent Yellow: #FACC15
+- Background White: #FFFFFF
+- Text Dark Gray: #1F2937
+
+Important:
+- I want clean and beginner friendly code
+- Add comments inside code explaining each part
+- Always create files with proper structure and organization
+- If I ask for new features, update code step-by-step instead of rewriting everything
+
+Pages to Create:
+1️⃣ Home Page
+   - Header (Logo THE RAS, Search bar, Cart icon, Login button)
+   - Hero Banner (with Shop Now button)
+   - Shop by Category section (4-6 category cards)
+   - Featured Products section (4–8 cards showing title & price)
+   - Footer (contact links)
+
+2️⃣ Product Listing Page
+   - Grid view of products
+   - Filtering by category (if possible)
+
+3️⃣ Product Detail Page
+   - Product image, title, price, description, category, and Add to Cart button
+
+4️⃣ Cart Page
+   - List of added items with total price and Remove button
+
+5️⃣ Login & Signup Page (User Authentication)
+   - Use MongoDB to store user data
+   - Encrypt passwords using bcrypt
+   - Use JWT for session tokens
+
+6️⃣ Checkout Page
+   - Address form
+   - Only Cash on Delivery option for now
+
+Admin Panel Features:
+- Add Product (Title, Price, Category, Stock, Image URL)
+- Edit/Delete Product
+
+Database Requirements:
+- Use MongoDB with Mongoose
+- Product model must include: title, description, price, category, stock, image
+- User model must include: name, email, password (hashed), role (admin/user)
+
+Server Requirements:
+- Use Express.js APIs following REST standards
+- Include proper error handling in all endpoints
+- CORS enabled for frontend communication
+
+Client Requirements:
+- Simple HTML pages that fetch data using JavaScript (fetch API)
+- No frameworks like React, Angular, Vue
+
+Performance & UI Requirements:
+- Mobile responsive basic layout
+- Buttons and cards matching brand colors
+- Show loading states when fetching data
+
+Each time we work:
+- Ask me what feature I want next
+- Confirm the plan before coding
+- Explain everything in simple language
+
+If anything is unclear, you must ask me questions instead of assuming.
