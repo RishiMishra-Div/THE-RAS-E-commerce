@@ -12,7 +12,7 @@ const auth = (req, res, next) => {
     }
 
     // Verify token
-    const verified = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-in-production');
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
     
     // Add user info to request
     req.user = verified;

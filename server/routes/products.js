@@ -19,6 +19,16 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET categories (public route) - must be before /:id route to avoid matching "categories" as an ID
+router.get('/categories/list', async (req, res) => {
+  try {
+    const categories = await Product.distinct('category');
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching categories', details: error.message });
+  }
+});
+
 // GET single product by ID (public route)
 router.get('/:id', async (req, res) => {
   try {
@@ -88,16 +98,6 @@ router.delete('/:id', auth, isAdmin, async (req, res) => {
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Error deleting product', details: error.message });
-  }
-});
-
-// GET categories (public route)
-router.get('/categories/list', async (req, res) => {
-  try {
-    const categories = await Product.distinct('category');
-    res.json(categories);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching categories', details: error.message });
   }
 });
 
