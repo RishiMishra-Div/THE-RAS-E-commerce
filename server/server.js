@@ -13,10 +13,7 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, '../public'))); // Serve static files from public folder
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/the-ras-ecommerce', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/the-ras-ecommerce')
   .then(() => console.log('✅ Connected to MongoDB'))
   .catch((error) => console.error('❌ MongoDB connection error:', error));
 

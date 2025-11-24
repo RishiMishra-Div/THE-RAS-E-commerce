@@ -11,3 +11,31 @@ channel = "stable-25_05"
 PORT = "5000"
 MONGODB_URI = "mongodb://localhost:27017/the-ras-ecommerce"
 JWT_SECRET = "537de4ad6eb4aba770591cc0c1b86af5f838f5ce2eabe1305bef66627fef7ea0ba8f224ce016e4edc88a89d65a79eeb3a5a539f92963011ec54fe38f24744746"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node server/server.js"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
