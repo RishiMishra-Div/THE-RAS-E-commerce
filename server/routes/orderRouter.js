@@ -14,6 +14,51 @@ router.get("/", isloggedIn, isAdmin, async (req, res) => {
   }
 });
 
+// creare order route
+
+router.post("/", isloggedIn, async (req, res) => {
+  try {
+    const {
+      firstName, lastName, email, phone, address,
+      city, state, zipCode, country, items,
+      subtotal, shipping, tax, total, paymentMethod
+    } = req.body;
+
+    if (!items || !items.length) {
+      return res.status(400).json({ error: "Order must contain items" });
+    }
+
+    const newOrder = await Order.create({
+      user: req.user._id,
+      shippingDetails: {
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        zipCode,
+        country
+      },
+      items,
+      subtotal,
+      shipping,
+      tax,
+      total,
+      paymentMethod: paymentMethod || "cod",
+      status: "pending"
+    });
+
+    res.status(201).json({ success: true, order: newOrder });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Order creation failed" });
+  }
+});
+
+
 // Update order status
 router.put("/:id", isloggedIn, isAdmin, async (req, res) => {
   try {

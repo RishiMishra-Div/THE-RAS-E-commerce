@@ -7,9 +7,23 @@ const orderSchema = new mongoose.Schema({
     required: true
   },
 
+  // 👇 Customer Billing Information
+  shippingDetails: {
+    firstName: String,
+    lastName: String,
+    email: String,
+    phone: String,
+    address: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: String
+  },
+
+  // 👇 Order Items
   items: [
     {
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       title: String,
       price: Number,
       quantity: Number,
@@ -17,7 +31,11 @@ const orderSchema = new mongoose.Schema({
     }
   ],
 
-  totalAmount: { type: Number, required: true },
+  // 👇 Price Breakdown
+  subtotal: Number,
+  shipping: Number,
+  tax: Number,
+  total: Number,
 
   paymentMethod: {
     type: String,
@@ -35,7 +53,6 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-
 });
 
 module.exports = mongoose.model("Order", orderSchema);
