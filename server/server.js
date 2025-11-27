@@ -21,12 +21,14 @@ const db = require('./config/mongodbConnection');
 
 // Import routes
 const userRouter = require('./routes/userRouter');
-const productRoutes = require('./routes/productRouter');
+const productRouter = require('./routes/productRouter');
+const categoryRouter = require('./routes/categoryRouter')
 
 
 // API Routes
 app.use('/api/auth', userRouter);
-app.use('/api/products', productRoutes);
+app.use('/api/products', productRouter);
+app.use('/api/admin/categories', categoryRouter);
 
 // Serve HTML pages
 app.get('/', (req, res) => {
