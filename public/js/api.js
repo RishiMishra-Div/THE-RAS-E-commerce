@@ -3,45 +3,66 @@
 // Base URL for API (change this if your backend is on a different port)
 const API_BASE_URL = '/api';
 
-// Helper function to get auth token from localStorage
-function getAuthToken() {
-  return localStorage.getItem('token');
-}
+// Helper function to get current user from backend (MongoDB)
+async function getCurrentUser() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      method: 'GET',
+      credentials: 'include' // ⬅ important so cookies are sent
+    });
 
-// Helper function to get user data from localStorage
-function getCurrentUser() {
-  const userStr = localStorage.getItem('user');
-  return userStr ? JSON.parse(userStr) : null;
+    if (!response.ok) {
+      // Not logged in or some error
+      return null;
+    }
+
+    const user = await response.json();
+    return user; // this is user from MongoDB
+
+  } catch (err) {
+    console.error('Error fetching current user:', err);
+    return null;
+  }
 }
 
 // Helper function to check if user is logged in
-function isLoggedIn() {
-  return !!getAuthToken();
+async function isLoggedIn() {
+  const user = await getCurrentUser();
+  return user !== null;
 }
 
+
 // Helper function to check if user is admin
-function isAdmin() {
-  const user = getCurrentUser();
+ async function isAdmin() {
+  const user = await getCurrentUser();
   return user && user.role === 'admin';
 }
 
 // Helper function to logout
-function logout() {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = '/';
+async function logout() {
+  try {
+    await fetch(`${API_BASE_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include' // send cookies for removal
+    });
+
+    window.location.href = '/'; // redirect to home page
+  } catch (err) {
+    console.error('Logout failed:', err);
+  }
 }
+
 
 // AUTH API CALLS
 
 // Sign up a new user
-async function signup(name, email, password) {
+async function signup(fullname, email, password) {
   const response = await fetch(`${API_BASE_URL}/auth/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ name, email, password })
+    body: JSON.stringify({ fullname, email, password })
   });
   
   const data = await response.json();
@@ -50,9 +71,9 @@ async function signup(name, email, password) {
     throw new Error(data.error || 'Signup failed');
   }
   
-  // Save token and user data
-  localStorage.setItem('token', data.token);
-  localStorage.setItem('user', JSON.stringify(data.user));
+  // // Save token and user data
+  // localStorage.setItem('token', data.token);
+  // localStorage.setItem('user', JSON.stringify(data.user));
   
   return data;
 }
@@ -73,9 +94,9 @@ async function login(email, password) {
     throw new Error(data.error || 'Login failed');
   }
   
-  // Save token and user data
-  localStorage.setItem('token', data.token);
-  localStorage.setItem('user', JSON.stringify(data.user));
+  // // Save token and user data
+  // localStorage.setItem('token', data.token);
+  // localStorage.setItem('user', JSON.stringify(data.user));
   
   return data;
 }
@@ -135,16 +156,16 @@ async function createProduct(productData) {
 }
 
 // Update product (admin only)
-async function updateProduct(id, productData) {
-  const token = getAuthToken();
+async function updateProduct(productId,updatedProduct) {
+  // const token = getAuthToken();
   
-  const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      // 'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify(productData)
+    body: JSON.stringify(updatedProduct)
   });
   
   const data = await response.json();

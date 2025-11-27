@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products - THE RAS</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
   <style>
     .filter-section {
       margin-bottom: 32px;
@@ -126,8 +126,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="/js/api.js"></script>
-  <script src="/js/cart.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/cart.js"></script>
   <script>
     let allProducts = [];
     let currentCategory = '';
@@ -243,25 +243,21 @@
     });
 
     // Update auth button
-    function updateAuthButton() {
+   // Update auth button
+    async function updateAuthButton() {
       const authBtn = document.getElementById('authBtn');
-      const user = getCurrentUser();
-      
+      const user = await getCurrentUser();
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
-        authBtn.href = user.role === 'admin' ? '/admin' : '#';
-        
-        if (user.role !== 'admin') {
-          authBtn.onclick = () => {
-            if (confirm('Do you want to logout?')) {
-              logout();
-            }
-            return false;
-          };
-        }
+        authBtn.href = user.role === 'admin' ? '/admin' : '/account';
+        authBtn.onclick = null; 
+      } else {
+        authBtn.textContent = 'Login';
+        authBtn.href = '/login';
+        authBtn.onclick = null;
       }
-    }
 
+    }
     // Initialize page
     updateAuthButton();
     loadProducts();

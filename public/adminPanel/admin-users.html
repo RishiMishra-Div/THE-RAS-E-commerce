@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users - Admin Panel | THE RAS</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>THE RAS</h2>
+    <p class="role-badge">ADMIN</p>
+  </div>
+
+  <nav class="sidebar-menu">
+    <a href="/admin">🏠 Dashboard</a>
+    <a href="/admin/addProduct">➕ Add Product</a>
+    <a href="/admin/manageProduct">🛍 Manage Products</a>
+    <a href="/admin/categories">📂 Categories</a>
+    <a href="/admin/orders">📄 Orders</a>
+    <a class="active" href="#">👤 Manage Users</a>
+  </nav>
+
+  <button id="logoutBtn" class="logout-btn">Logout</button>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+
+  <header class="admin-header">
+    <h1>Manage Users</h1>
+    <p>View and control user roles & account privileges 👥</p>
+  </header>
+
+  <!-- Filters -->
+  <div class="order-filters">
+    <select id="roleFilter">
+      <option value="all">All Users</option>
+      <option value="user">Users</option>
+      <option value="admin">Admins</option>
+      <option value="blocked">Blocked</option>
+    </select>
+
+    <input type="text" id="searchUser" placeholder="Search name, email...">
+  </div>
+
+  <!-- Table -->
+  <table class="user-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>User Info</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Joined</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="usersTableBody">
+      <tr><td colspan="6" style="text-align:center;">Loading...</td></tr>
+    </tbody>
+  </table>
+
+</main>
+
+<script src="/js/api.js"></script>
+<script>
+  
+  async function protectAdminPage() {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin") {
+      alert("Unauthorized");
+      window.location.href = "/";
+    }
+  }
+  protectAdminPage();
+
+
+  let allUsers = [];
+
+  // Fetch users
+  async function loadUsers() {
+    const res = await fetch(`${API_BASE_URL}/users`, { credentials: "include" });
+    allUsers = await res.json();
+    renderUsers(allUsers);
+  }
+
+
+  // Render Users Table
+  function renderUsers(users) {
+    const table = document.getElementById("usersTableBody");
+
+    if (!users.length) {
+      table.innerHTML = `<tr><td colspan="6" style="text-align:center;">No users found</td></tr>`;
+      return;
+    }
+
+    table.innerHTML = users.map((u, index) => `
+      <tr>
+        <td>${index + 1}</td>
+
+        <td>
+          <strong>${u.fullname}</strong><br>
+          <small>${u.email}</small>
+        </td>
+
+        <td>
+          <span class="badge badge-${u.role}">${u.role.toUpperCase()}</span>
+        </td>
+
+        <td>
+          <span class="badge badge-${u.isBlocked ? "blocked" : "active"}">
+            ${u.isBlocked ? "BLOCKED" : "ACTIVE"}
+          </span>
+        </td>
+
+        <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+
+        <td>
+          ${u.role !== "admin" ? 
+            `<button class="action-btn promote" onclick="changeRole('${u._id}', 'admin')">Make Admin</button>` :
+            `<button class="action-btn demote" onclick="changeRole('${u._id}', 'user')">Remove Admin</button>`
+          }
+
+          ${!u.isBlocked ?
+            `<button class="action-btn block" onclick="blockUser('${u._id}', true)">Block</button>` :
+            `<button class="action-btn unblock" onclick="blockUser('${u._id}', false)">Unblock</button>`
+          }
+
+          <button class="action-btn delete" onclick="deleteUser('${u._id}')">Delete</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+
+
+  // Change Role
+  async function changeRole(id, role) {
+    const res = await fetch(`${API_BASE_URL}/users/role/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ role })
+    });
+
+    if (res.ok) {
+      alert("Role Updated");
+      loadUsers();
+    }
+  }
+
+
+  // Block / Unblock
+  async function blockUser(id, block) {
+    const res = await fetch(`${API_BASE_URL}/users/block/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ isBlocked: block })
+    });
+
+    if (res.ok) {
+      alert(block ? "User Blocked" : "User Unblocked");
+      loadUsers();
+    }
+  }
+
+
+  // Delete User
+  async function deleteUser(id) {
+    if (!confirm("Delete this user permanently?")) return;
+
+    const res = await fetch(`${API_BASE_URL}/users/${id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (res.ok) {
+      alert("User Deleted");
+      loadUsers();
+    }
+  }
+
+
+  // Filters
+  document.getElementById("roleFilter").addEventListener("change", (e) => {
+    const value = e.target.value;
+
+    if (value === "all") return renderUsers(allUsers);
+    if (value === "blocked") return renderUsers(allUsers.filter(u => u.isBlocked));
+
+    renderUsers(allUsers.filter(u => u.role === value));
+  });
+
+
+  // Search
+  document.getElementById("searchUser").addEventListener("input", (e) => {
+    const value = e.target.value.toLowerCase();
+
+    const filtered = allUsers.filter(u =>
+      u.fullname.toLowerCase().includes(value) ||
+      u.email.toLowerCase().includes(value)
+    );
+
+    renderUsers(filtered);
+  });
+
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  loadUsers();
+</script>
+</body>
+</html>

@@ -1,21 +1,13 @@
 // Product Routes - Handle all product-related operations
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/Product');
-const { auth, isAdmin } = require('../middleware/auth');
+const Product = require('../models/productModel');
+const { isloggedIn} = require('../middlewares/isloggedIn');
+const{isAdmin} = require('../middlewares/isAdmin')
 
 // GET all products (public route)
 router.get('/', async (req, res) => {
   try {
-    const mongoose = require('mongoose');
-    
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({ 
-        error: 'Database not connected', 
-        message: 'Please configure MongoDB connection in environment variables' 
-      });
-    }
-    
     const { category } = req.query;
     
     // Filter by category if provided
@@ -31,15 +23,6 @@ router.get('/', async (req, res) => {
 // GET categories (public route) - must be before /:id route to avoid matching "categories" as an ID
 router.get('/categories/list', async (req, res) => {
   try {
-    const mongoose = require('mongoose');
-    
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({ 
-        error: 'Database not connected', 
-        message: 'Please configure MongoDB connection in environment variables' 
-      });
-    }
-    
     const categories = await Product.distinct('category');
     res.json(categories);
   } catch (error) {
@@ -50,15 +33,6 @@ router.get('/categories/list', async (req, res) => {
 // GET single product by ID (public route)
 router.get('/:id', async (req, res) => {
   try {
-    const mongoose = require('mongoose');
-    
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({ 
-        error: 'Database not connected', 
-        message: 'Please configure MongoDB connection in environment variables' 
-      });
-    }
-    
     const product = await Product.findById(req.params.id);
     
     if (!product) {
@@ -72,7 +46,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // CREATE new product (admin only)
-router.post('/', auth, isAdmin, async (req, res) => {
+router.post('/', isloggedIn , isAdmin , async (req, res) => {
   try {
     const { title, description, price, category, stock, image } = req.body;
 
@@ -93,7 +67,7 @@ router.post('/', auth, isAdmin, async (req, res) => {
 });
 
 // UPDATE product (admin only)
-router.put('/:id', auth, isAdmin, async (req, res) => {
+router.put('/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const { title, description, price, category, stock, image } = req.body;
 
@@ -114,7 +88,7 @@ router.put('/:id', auth, isAdmin, async (req, res) => {
 });
 
 // DELETE product (admin only)
-router.delete('/:id', auth, isAdmin, async (req, res) => {
+router.delete('/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
 

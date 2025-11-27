@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shopping Cart - THE RAS</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
   <style>
     .cart-container {
       display: grid;
@@ -226,8 +226,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="/js/api.js"></script>
-  <script src="/js/cart.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/cart.js"></script>
   <script>
     // Display cart
     function displayCart() {
@@ -304,7 +304,13 @@
       updateQuantity(productId, newQuantity);
       displayCart();
     }
-
+     // Increase quantity
+    function increaseQuantity() {
+      if (quantity < currentProduct.stock) {
+        quantity++;
+        document.getElementById('quantityValue').textContent = quantity;
+      }
+    }
     // Remove item
     function removeItem(productId) {
       if (confirm('Remove this item from cart?')) {
@@ -334,22 +340,18 @@
     });
 
     // Update auth button
-    function updateAuthButton() {
+    async function updateAuthButton() {
       const authBtn = document.getElementById('authBtn');
-      const user = getCurrentUser();
-      
+      const user = await getCurrentUser();
+  
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
-        authBtn.href = user.role === 'admin' ? '/admin' : '#';
-        
-        if (user.role !== 'admin') {
-          authBtn.onclick = () => {
-            if (confirm('Do you want to logout?')) {
-              logout();
-            }
-            return false;
-          };
-        }
+        authBtn.href = user.role === 'admin' ? '/admin' : '/account';
+        authBtn.onclick = null; 
+      } else {
+        authBtn.textContent = 'Login';
+        authBtn.href = '/login';
+        authBtn.onclick = null;
       }
     }
 

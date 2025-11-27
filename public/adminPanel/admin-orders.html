@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Orders - Admin Panel | THE RAS</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>THE RAS</h2>
+    <p class="role-badge">ADMIN</p>
+  </div>
+
+  <nav class="sidebar-menu">
+    <a href="/admin">🏠 Dashboard</a>
+    <a href="/admin/addproduct">➕ Add Product</a>
+    <a href="/admin/manageProduct">🛍 Manage Products</a>
+    <a href="/admin/categories">📂 Categories</a>
+    <a class="active" href="#">📄 Manage Orders</a>
+    <a href="/admin/users">👤 Users</a>
+  </nav>
+
+  <button id="logoutBtn" class="logout-btn">Logout</button>
+</aside>
+
+<!-- Main -->
+<main class="main-content">
+
+  <header class="admin-header">
+    <h1>Manage Orders</h1>
+    <p>Track, update and manage customer orders 📦</p>
+  </header>
+
+  <!-- Filters -->
+  <div class="order-filters">
+    <select id="filterStatus">
+      <option value="all">All Orders</option>
+      <option value="pending">Pending</option>
+      <option value="processing">Processing</option>
+      <option value="shipped">Shipped</option>
+      <option value="delivered">Delivered</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+
+    <input type="text" id="searchOrder" placeholder="Search order, email, name...">
+  </div>
+
+  <!-- Table -->
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th>Items</th>
+        <th>Total</th>
+        <th>Payment</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="orderTableBody">
+      <tr><td colspan="8" style="text-align:center;">Loading...</td></tr>
+    </tbody>
+  </table>
+
+</main>
+
+<script src="/js/api.js"></script>
+<script>
+
+  async function protectAdminPage() {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin") {
+      alert("Unauthorized");
+      window.location.href = "/";
+    }
+  }
+  protectAdminPage();
+
+  let allOrders = [];
+
+
+  async function loadOrders() {
+    const res = await fetch(`${API_BASE_URL}/orders`, { credentials: "include" });
+    allOrders = await res.json();
+    renderOrders(allOrders);
+  }
+
+
+  // Render table
+  function renderOrders(orders) {
+    const table = document.getElementById("orderTableBody");
+
+    if (!orders.length) {
+      table.innerHTML = `<tr><td colspan="8" style="text-align:center;">No orders found</td></tr>`;
+      return;
+    }
+
+    table.innerHTML = orders.map(order => `
+      <tr>
+        <td>#${order._id.slice(-6)}</td>
+
+        <td>
+          <strong>${order.user?.fullname || "Unknown"}</strong><br>
+          <small>${order.user?.email}</small>
+        </td>
+
+        <td>
+          ${order.items.map(i => `<div>${i.title} × ${i.quantity}</div>`).join("")}
+        </td>
+
+        <td>₹${order.totalAmount}</td>
+
+        <td>${order.paymentMethod.toUpperCase()}</td>
+
+        <td>
+          <select onchange="updateStatus('${order._id}', this.value)">
+            ${["pending", "processing", "shipped", "delivered", "cancelled"]
+              .map(status => 
+                `<option value="${status}" ${status === order.status ? "selected" : ""}>${status.toUpperCase()}</option>`
+              ).join("")}
+          </select>
+        </td>
+
+        <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+
+        <td>
+          <button class="action-btn delete" onclick="deleteOrder('${order._id}')">Delete</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+
+  // Update order status
+  async function updateStatus(id, newStatus) {
+    const res = await fetch(`${API_BASE_URL}/orders/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ status: newStatus })
+    });
+
+    if (res.ok) {
+      alert("Status Updated");
+      loadOrders();
+    }
+  }
+
+
+  // Delete order
+  async function deleteOrder(id) {
+    if (!confirm("Delete this order?")) return;
+
+    const res = await fetch(`${API_BASE_URL}/orders/${id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (res.ok) {
+      alert("Order Deleted");
+      loadOrders();
+    }
+  }
+
+
+  // Filter orders by status
+  document.getElementById("filterStatus").addEventListener("change", (e) => {
+    const value = e.target.value;
+    if (value === "all") return renderOrders(allOrders);
+    renderOrders(allOrders.filter(o => o.status === value));
+  });
+
+
+  // Search function
+  document.getElementById("searchOrder").addEventListener("input", (e) => {
+    const value = e.target.value.toLowerCase();
+
+    const filtered = allOrders.filter(o =>
+      o._id.toLowerCase().includes(value) ||
+      o.user?.fullname?.toLowerCase().includes(value) ||
+      o.user?.email?.toLowerCase().includes(value) ||
+      o.items.some(i => i.title.toLowerCase().includes(value))
+    );
+
+    renderOrders(filtered);
+  });
+
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  loadOrders();
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up - THE RAS</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
   <header class="header">
@@ -63,8 +63,8 @@
     </div>
   </section>
 
-  <script src="/js/api.js"></script>
-  <script src="/js/cart.js"></script>
+  <script src="./js/api.js"></script>
+  <script src="./js/cart.js"></script>
   <script>
     const signupForm = document.getElementById('signupForm');
     const errorMessage = document.getElementById('errorMessage');
@@ -72,7 +72,7 @@
     signupForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const name = document.getElementById('name').value;
+      const fullname= document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
@@ -96,7 +96,7 @@
       submitButton.textContent = 'Creating account...';
       
       try {
-        await signup(name, email, password);
+        await signup(fullname, email, password);
         showNotification('Account created successfully!');
         
         setTimeout(() => {

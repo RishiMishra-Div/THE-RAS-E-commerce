@@ -1,42 +1,31 @@
 // Main Server File - Entry point for the backend
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
 
 const app = express();
+
 
 // Middleware
 app.use(cors()); // Allow cross-origin requests
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, '../public'))); // Serve static files from public folder
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI || MONGODB_URI.includes('localhost')) {
-  console.log('⚠️  WARNING: No MongoDB connection configured!');
-  console.log('📝 To fix this:');
-  console.log('   1. Get a FREE database at https://mongodb.com/cloud/atlas');
-  console.log('   2. Add your connection string to the MONGODB_URI environment variable');
-  console.log('   3. Restart the application\n');
-  console.log('🚀 Server will run, but database features won\'t work until connected.\n');
-} else {
-  mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ Connected to MongoDB'))
-    .catch((error) => {
-      console.error('❌ MongoDB connection error:', error.message);
-      console.log('💡 Check your MONGODB_URI environment variable');
-    });
-}
+//connect to database
+const db = require('./config/mongodbConnection');
 
 // Import routes
-const authRoutes = require('./routes/auth');
-const productRoutes = require('./routes/products');
+const userRouter = require('./routes/userRouter');
+const productRoutes = require('./routes/productRouter');
+
 
 // API Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', userRouter);
 app.use('/api/products', productRoutes);
 
 // Serve HTML pages
@@ -69,11 +58,51 @@ app.get('/checkout', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/admin.html'));
+  res.sendFile(path.join(__dirname, '../public/adminpanel.html'));
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
+app.get('/account', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/account.html'));
 });
+
+// admin panel routes
+
+app.get('/admin/addProduct', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/adminPanel/addProduct.html'));
+});
+
+
+app.get('/admin/manageProduct', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-manage-products.html'));
+});
+
+app.get('/admin/edit/product', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-edit-product.html'));
+});
+
+app.get('/admin/categories', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-categories.html'));
+});
+
+app.get('/admin/orders', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-orders.html'));
+});
+
+
+app.get('/admin/users', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-users.html'));
+});
+
+
+
+
+
+
+// Start server
+const PORT =4000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on : ${PORT}`);
+});
+
+
+

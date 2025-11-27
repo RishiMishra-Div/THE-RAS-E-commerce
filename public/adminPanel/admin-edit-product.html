@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product - Admin Panel | THE RAS</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>THE RAS</h2>
+      <p class="role-badge">ADMIN</p>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/admin">🏠 Dashboard</a>
+      <a href="/admin/addProduct">➕ Add Product</a>
+      <a href="/admin/manageProduct">🛍 Manage Products</a>
+      <a class="active" href="#">✏ Edit Product</a>
+      <a href="/admin/categories">📂 Manage Categories</a>
+      <a href="/admin/orders">📄 Manage Orders</a>
+      <a href="/admin/users">👤 Manage Users</a>
+    </nav>
+
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </aside>
+
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <header class="admin-header">
+      <h1>Edit Product</h1>
+      <p>Update product details and save changes 🛠</p>
+    </header>
+
+    <form id="editForm" class="product-form">
+
+      <div class="form-group">
+        <label>Product Title *</label>
+        <input type="text" id="title" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description *</label>
+        <textarea id="description" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Category *</label>
+        <select id="category" ></select>
+      </div>
+      <!-- required -->
+
+      <div class="form-group-inline">
+        <div>
+          <label>Price *</label>
+          <input type="number" id="price" required>
+        </div>
+
+        <div>
+          <label>Stock *</label>
+          <input type="number" id="stock" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Product Image *</label>
+        <input type="text" id="image" required>
+      </div>
+
+      <img id="previewImage" class="preview-img" />
+
+      <button type="submit" class="btn-primary full-btn">Save Changes</button>
+    </form>
+
+  </main>
+
+<script src="/js/api.js"></script>
+<script>
+
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
+
+  // Protect Page
+  async function protectAdminPage() {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin"){
+      alert("Unauthorized access!");
+      window.location.href = "/";
+    }
+  }
+  protectAdminPage();
+
+
+  // Fetch & Populate product data
+  async function loadProduct() {
+
+    // const res = await fetch(`${API_BASE_URL}/products/${productId}`);
+    const product = await getProduct(productId) 
+    // res.json();
+
+    document.getElementById("title").value = product.title;
+    document.getElementById("description").value = product.description;
+    document.getElementById("price").value = product.price;
+    document.getElementById("stock").value = product.stock;
+    document.getElementById("image").value = product.image;
+
+    document.getElementById("previewImage").src = product.image;
+
+    // loadCategories(product.category);
+  }
+
+  
+  // Load categories and preselect current one
+  async function loadCategories(selectedCategory) {
+    const res = await fetch(`${API_BASE_URL}/categories`);
+    const categories = await res.json();
+
+    const select = document.getElementById("category");
+
+    select.innerHTML = categories.map(c =>
+      `<option value="${c.name}" ${c.name === selectedCategory ? 'selected' : ''}>${c.name}</option>`
+    ).join('');
+  }
+
+
+  // Submit Updated Data
+  document.getElementById("editForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const updatedProduct = {
+      title: document.getElementById("title").value,
+      description: document.getElementById("description").value,
+      // category: document.getElementById("category").value,
+      price: Number(document.getElementById("price").value),
+      stock: Number(document.getElementById("stock").value),
+      image: document.getElementById("image").value,
+    };
+
+    const res = await updateProduct( productId,updatedProduct);
+
+    
+
+
+    if (res) {
+      alert("Product updated successfully!");
+      window.location.href = "/admin/manageProduct";
+    } else {
+      alert("Error updating product.");
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  loadProduct();
+
+</script>
+</body>
+</html>

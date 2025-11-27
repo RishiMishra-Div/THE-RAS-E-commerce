@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account - THE RAS</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header-content">
+      <a href="/" class="logo">THE RAS</a>
+    </div>
+  </header>
+
+  <section class="account-container container">
+    <h2 class="section-title">My Account</h2>
+
+    <div class="account-card">
+      <div class="account-info">
+        <p><strong>Name:</strong> <span id="userName">Loading...</span></p>
+        <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+      </div>
+
+      <div class="account-actions">
+        <a href="/orders" class="btn btn-secondary">My Orders</a>
+        <a href="/wishlist" class="btn btn-secondary">Wishlist</a>
+        <a href="/addresses" class="btn btn-secondary">Manage Address</a>
+        <button id="logoutBtn" class="btn btn-danger">Logout</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="/js/api.js"></script>
+  <script>
+    async function loadAccountPage() {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      document.getElementById("userName").textContent = user.fullname;
+      document.getElementById("userEmail").textContent = user.email;
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      logout();
+    });
+
+    loadAccountPage();
+  </script>
+
+</body>
+</html>

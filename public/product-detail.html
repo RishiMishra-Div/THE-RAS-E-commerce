@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details - THE RAS</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
   <style>
     .product-detail {
       display: grid;
@@ -280,26 +280,21 @@
       }
     });
 
-    // Update auth button
-    function updateAuthButton() {
+   // Update auth button
+    async function updateAuthButton() {
       const authBtn = document.getElementById('authBtn');
-      const user = getCurrentUser();
-      
+      const user = await getCurrentUser();
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
-        authBtn.href = user.role === 'admin' ? '/admin' : '#';
-        
-        if (user.role !== 'admin') {
-          authBtn.onclick = () => {
-            if (confirm('Do you want to logout?')) {
-              logout();
-            }
-            return false;
-          };
-        }
+        authBtn.href = user.role === 'admin' ? '/admin' : '/account';
+        authBtn.onclick = null; 
+      } else {
+        authBtn.textContent = 'Login';
+        authBtn.href = '/login';
+        authBtn.onclick = null;
       }
-    }
 
+    }
     // Initialize page
     updateAuthButton();
     loadProductDetails();

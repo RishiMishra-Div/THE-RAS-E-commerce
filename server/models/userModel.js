@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // Create a schema (blueprint) for User
 const userSchema = new mongoose.Schema({
   // User's full name
-  name: {
+  fullname: {
     type: String,
     required: true,
     trim: true
@@ -22,6 +22,35 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  // otp for verification
+  verifyotp :{
+        type: String,
+        default : null,
+  },
+    //  verification otp expiry time
+  verifyotpexpiry :{
+      type: Number,
+      defoult:0
+  },
+
+    // verification checkup
+  isverified :{
+      type: Boolean,
+      default: false
+  },
+
+  // password reset otp
+  resetotp:{
+      type: String,
+      default: null
+  },
+
+  // password reset otp expiry time
+  resetotpexpiry:{
+      type: Number,
+      default: 0
+  },
+
   // User role: 'user' or 'admin'
   role: {
     type: String,
@@ -34,4 +63,5 @@ const userSchema = new mongoose.Schema({
 });
 
 // Export the User model
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
+

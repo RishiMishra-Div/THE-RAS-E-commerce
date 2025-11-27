@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Categories - Admin Panel | THE RAS</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>THE RAS</h2>
+      <p class="role-badge">ADMIN</p>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/admin">🏠 Dashboard</a>
+      <a href="/admin/addProduct">➕ Add Product</a>
+      <a href="/admin/manageProduct">🛍 Manage Products</a>
+      <a class="active" href="/admin/categories">📂 Manage Categories</a>
+      <a href="/admin/orders">📄 Manage Orders</a>
+      <a href="/admin/users">👤 Manage Users</a>
+    </nav>
+
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </aside>
+
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <h1>Manage Categories</h1>
+    <p>Here you can add, edit and delete product categories 📂</p>
+
+    <!-- Add Category Form -->
+    <form id="categoryForm" class="product-form">
+      <div class="form-group">
+        <label>Category Name *</label>
+        <input type="text" id="categoryName" required placeholder="e.g Electronics">
+      </div>
+      <button type="submit" class="btn-primary full-btn">Add Category</button>
+    </form>
+
+    <!-- Table -->
+    <table class="product-table" style="margin-top:25px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Category Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="categoryList">
+        <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+
+<script src="/js/api.js"></script>
+<script>
+
+  async function protectAdminPage() {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin") {
+      alert("Unauthorized access!");
+      window.location.href = "/";
+    }
+  }
+  protectAdminPage();
+
+
+  // Load categories
+  async function loadCategories() {
+    const res = await fetch(`${API_BASE_URL}/categories`);
+    const data = await res.json();
+    renderCategories(data);
+  }
+
+  function renderCategories(categories) {
+    const tbody = document.getElementById("categoryList");
+
+    if (!categories.length) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No categories yet</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = categories.map((c, index) => `
+      <tr id="row-${c._id}">
+        <td>${index + 1}</td>
+
+        <td>
+          <span id="name-${c._id}">${c.name}</span>
+          <input id="input-${c._id}" value="${c.name}" class="category-edit-input" style="display:none;">
+        </td>
+
+        <td>
+          <button class="action-btn edit" onclick="enableEdit('${c._id}')">Edit</button>
+          <button class="action-btn save" id="save-${c._id}" style="display:none;" onclick="saveCategory('${c._id}')">Save</button>
+
+          <button class="action-btn cancel" id="cancel-${c._id}" style="display:none;" onclick="cancelEdit('${c._id}')">Cancel</button>
+
+          <button class="action-btn delete" onclick="deleteCategory('${c._id}')">Delete</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+
+  function enableEdit(id) {
+    document.getElementById(`name-${id}`).style.display = "none";
+    document.getElementById(`input-${id}`).style.display = "inline-block";
+
+    document.getElementById(`save-${id}`).style.display = "inline-block";
+    document.getElementById(`cancel-${id}`).style.display = "inline-block";
+  }
+
+
+  function cancelEdit(id) {
+    document.getElementById(`input-${id}`).style.display = "none";
+    document.getElementById(`name-${id}`).style.display = "inline";
+
+    document.getElementById(`save-${id}`).style.display = "none";
+    document.getElementById(`cancel-${id}`).style.display = "none";
+  }
+
+
+  async function saveCategory(id) {
+    const newName = document.getElementById(`input-${id}`).value.trim();
+    if (!newName) return alert("Category name required!");
+
+    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name: newName })
+    });
+
+    if (res.ok) {
+      alert("Category Updated!");
+      loadCategories();
+    }
+  }
+
+
+  async function deleteCategory(id) {
+    if (!confirm("Delete this category?")) return;
+
+    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (res.ok) {
+      alert("Deleted!");
+      loadCategories();
+    }
+  }
+
+
+  // Add new category
+  document.getElementById("categoryForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("categoryName").value.trim();
+    if (!name) return;
+
+    const res = await fetch(`${API_BASE_URL}/categories`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name })
+    });
+
+    if (res.ok) {
+      alert("Category Added!");
+      document.getElementById("categoryForm").reset();
+      loadCategories();
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  loadCategories();
+
+</script>
+</body>
+</html>

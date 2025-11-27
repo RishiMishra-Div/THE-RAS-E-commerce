@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Products - Admin Panel | THE RAS</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>THE RAS</h2>
+      <p class="role-badge">ADMIN</p>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="/admin">🏠 Dashboard</a>
+      <a href="/admin/addproduct">➕ Add Product</a>
+      <a class="active" href="/admin/manageProduct">🛍 Manage Products</a>
+      <a href="/admin/categories">📂 Manage Categories</a>
+      <a href="/admin/orders">📄 Manage Orders</a>
+      <a href="/admin/users">👤 Manage Users</a>
+    </nav>
+
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </aside>
+
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <header class="admin-header">
+      <h1>Manage Products</h1>
+      <p>View, update or delete products from your store 🛍</p>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search product name...">
+    </div>
+
+    <!-- Products Table -->
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="productTableBody">
+        <tr><td colspan="6" class="loading">Loading...</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+
+<script src="/js/api.js"></script>
+<script>
+
+  // Protect Route
+  async function protectAdminPage() {
+    const user = await getCurrentUser();
+    if (!user || user.role !== "admin") {
+      alert("Unauthorized access!");
+      window.location.href = "/";
+    }
+  }
+  protectAdminPage();
+
+
+  // Load Products
+  async function loadProducts() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/products`);
+      const products = await res.json();
+      renderProducts(products);
+    } catch (err) {
+      alert("Error loading products!");
+    }
+  }
+
+  
+  // Render UI
+  function renderProducts(products) {
+    const table = document.getElementById("productTableBody");
+
+    if (!products.length) {
+      table.innerHTML = `<tr><td colspan="6" style="text-align:center;">No products found</td></tr>`;
+      return;
+    }
+
+    table.innerHTML = products.map(p => `
+      <tr>
+        <td><img src="${p.image}" class="table-img"></td>
+        <td>${p.title}</td>
+        <td>${p.category}</td>
+        <td>$${p.price}</td>
+        <td>${p.stock}</td>
+        <td>
+          <button class="action-btn edit" onclick="editProduct('${p._id}')">Edit</button>
+          <button class="action-btn delete" onclick="deleteProduct('${p._id}')">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+
+  // Delete Product
+  async function deleteProduct(id) {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+
+    const res = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (res.ok) {
+      alert("Product deleted successfully!");
+      loadProducts();
+    } else {
+      alert("Error deleting product.");
+    }
+  }
+
+
+  // Edit Product Handler
+  function editProduct(id) {
+    window.location.href = `/admin/edit/product?id=${id}`;
+  }
+  // /admin/edit/Product/:id
+
+
+  // Search Functionality
+  document.getElementById("searchInput").addEventListener("input", async (e) => {
+    const search = e.target.value.toLowerCase();
+    const res = await fetch(`${API_BASE_URL}/products`);
+    const allProducts = await res.json();
+
+    const filtered = allProducts.filter(p => 
+      p.title.toLowerCase().includes(search)
+    );
+
+    renderProducts(filtered);
+  });
+
+
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  loadProducts();
+</script>
+</body>
+</html>

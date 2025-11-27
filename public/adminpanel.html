@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - THE RAS</title>
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>THE RAS</h2>
+      <p class="role-badge">ADMIN</p>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="#" class="active">🏠 Dashboard</a>
+      <a href="/admin/addProduct">➕ Add Product</a>
+      <a href="/admin/manageProduct">🛍 Manage Products</a>
+      <a href="/admin/categories">📂 Manage Categories</a>
+      <a href="/admin/orders">📄 Manage Orders</a>
+      <a href="#">👤 Manage Users</a>
+    </nav>
+
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </aside>
+
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="admin-header">
+      <h1>Admin Dashboard</h1>
+      <p>Manage your store from one place 🚀</p>
+    </header>
+
+    <section class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Products</h3>
+        <span id="statProducts">0</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Orders</h3>
+        <span id="statOrders">0</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Users</h3>
+        <span id="statUsers">0</span>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Revenue</h3>
+        <span id="statRevenue">₹0</span>
+      </div>
+    </section>
+
+    <section class="recent-orders">
+      <h2>Recent Orders</h2>
+      <p>(Soon when order system added)</p>
+    </section>
+  </main>
+
+  <script src="./js/api.js"></script>
+  <script>
+    async function protectAdminPage() {
+      const user = await getCurrentUser();
+
+      if (!user || user.role !== "admin") {
+        alert("Unauthorized access. Redirecting...");
+        window.location.href = "/";
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => logout());
+
+    protectAdminPage();
+  </script>
+
+</body>
+</html>
