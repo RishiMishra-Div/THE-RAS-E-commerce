@@ -11,3 +11,7 @@ yarn-error.log*
 *.swo
 *~
 .local
+
+server/.env
+.env
+
