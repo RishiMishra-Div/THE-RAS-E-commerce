@@ -110,20 +110,21 @@
     document.getElementById("image").value = product.image;
 
     document.getElementById("previewImage").src = product.image;
-
-    // loadCategories(product.category);
+    
+    loadCategories(product.category);
   }
 
   
   // Load categories and preselect current one
   async function loadCategories(selectedCategory) {
-    const res = await fetch(`${API_BASE_URL}/categories`);
-    const categories = await res.json();
+
+    const categories = await getCategories();
+    
 
     const select = document.getElementById("category");
 
     select.innerHTML = categories.map(c =>
-      `<option value="${c.name}" ${c.name === selectedCategory ? 'selected' : ''}>${c.name}</option>`
+      `<option value="${c.name}" ${c === selectedCategory ? 'selected' : ''}>${c.name}</option>`
     ).join('');
   }
 
@@ -135,7 +136,7 @@
     const updatedProduct = {
       title: document.getElementById("title").value,
       description: document.getElementById("description").value,
-      // category: document.getElementById("category").value,
+      category: document.getElementById("category").value,
       price: Number(document.getElementById("price").value),
       stock: Number(document.getElementById("stock").value),
       image: document.getElementById("image").value,

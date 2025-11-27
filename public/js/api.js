@@ -135,13 +135,13 @@ async function getProduct(id) {
 
 // Create new product (admin only)
 async function createProduct(productData) {
-  const token = getAuthToken();
+  // const token = getAuthToken();
   
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      // 'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify(productData)
   });
@@ -196,10 +196,10 @@ async function deleteProduct(id) {
   
   return data;
 }
-
+// category related routes
 // Get all categories
 async function getCategories() {
-  const response = await fetch(`${API_BASE_URL}/products/categories/list`);
+  const response = await fetch(`${API_BASE_URL}/admin/categories`);
   const data = await response.json();
   
   if (!response.ok) {
@@ -208,3 +208,63 @@ async function getCategories() {
   
   return data;
 }
+
+// add new category
+async function addNewCategory(name) {
+try {
+   const res = await fetch(`${API_BASE_URL}/admin/categories`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to update category');
+    }
+
+    return data;
+  } catch (error) {
+    return error
+}}
+
+// save edited category
+  async function saveCategory(id, name) {
+try {
+   const res = await fetch(`${API_BASE_URL}/admin/categories/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ name })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to update category');
+    }
+
+    return data;
+  } catch (error) {
+    return error
+}}
+
+  // delete category
+  async function deleteCategory(id) {
+    const res = await fetch(`${API_BASE_URL}/admin/categories/${id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to delete category');
+    };
+
+    return data;
+  }
+
+
+
+
+

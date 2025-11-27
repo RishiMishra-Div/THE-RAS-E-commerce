@@ -93,8 +93,8 @@
   // Load Categories from backend
   async function loadCategories() {
     try {
-      const res = await fetch(`${API_BASE_URL}/products/categories/list`);
-      const categories = await res.json();
+
+      const categories = await getCategories()
 
       const select = document.getElementById("category");
       select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
@@ -120,14 +120,9 @@
       image: document.getElementById("image").value,
     };
 
-    const response = await fetch(`${API_BASE_URL}/products`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(product)
-    });
+    const response = await createProduct(product);
 
-    if (response.ok) {
+    if (response) {
       alert("Product added successfully!");
       document.getElementById("productForm").reset();
     } else {

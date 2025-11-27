@@ -75,9 +75,8 @@
 
   // Load categories
   async function loadCategories() {
-    const res = await fetch(`${API_BASE_URL}/categories`);
-    const data = await res.json();
-    renderCategories(data);
+     const categories = await getCategories();
+    renderCategories(categories);
   }
 
   function renderCategories(categories) {
@@ -99,17 +98,17 @@
 
         <td>
           <button class="action-btn edit" onclick="enableEdit('${c._id}')">Edit</button>
-          <button class="action-btn save" id="save-${c._id}" style="display:none;" onclick="saveCategory('${c._id}')">Save</button>
+          <button class="action-btn save" id="save-${c._id}" style="display:none;" onclick="handleSaveCategory('${c._id}')">Save</button>
 
           <button class="action-btn cancel" id="cancel-${c._id}" style="display:none;" onclick="cancelEdit('${c._id}')">Cancel</button>
 
-          <button class="action-btn delete" onclick="deleteCategory('${c._id}')">Delete</button>
+          <button class="action-btn delete" onclick="handleDeleteCategory('${c._id}')">Delete</button>
         </td>
       </tr>
     `).join("");
   }
 
-
+// enable for editing
   function enableEdit(id) {
     document.getElementById(`name-${id}`).style.display = "none";
     document.getElementById(`input-${id}`).style.display = "inline-block";
@@ -118,7 +117,7 @@
     document.getElementById(`cancel-${id}`).style.display = "inline-block";
   }
 
-
+// cancel editing
   function cancelEdit(id) {
     document.getElementById(`input-${id}`).style.display = "none";
     document.getElementById(`name-${id}`).style.display = "inline";
@@ -127,34 +126,26 @@
     document.getElementById(`cancel-${id}`).style.display = "none";
   }
 
+// save edited category
+  async function handleSaveCategory(id) {
+    const name = document.getElementById(`input-${id}`).value.trim();
+    if (!name) return alert("Category name required!");
 
-  async function saveCategory(id) {
-    const newName = document.getElementById(`input-${id}`).value.trim();
-    if (!newName) return alert("Category name required!");
+    const res = await saveCategory(id, name)
 
-    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name: newName })
-    });
-
-    if (res.ok) {
+    if (res) {
       alert("Category Updated!");
       loadCategories();
     }
   }
 
-
-  async function deleteCategory(id) {
+// delete category
+  async function handleDeleteCategory(id) {
     if (!confirm("Delete this category?")) return;
 
-    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
-      method: "DELETE",
-      credentials: "include"
-    });
+    const res = await deleteCategory(id);
 
-    if (res.ok) {
+    if (res) {
       alert("Deleted!");
       loadCategories();
     }
@@ -168,14 +159,9 @@
     const name = document.getElementById("categoryName").value.trim();
     if (!name) return;
 
-    const res = await fetch(`${API_BASE_URL}/categories`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name })
-    });
+    const res = await addNewCategory(name)
 
-    if (res.ok) {
+    if (res) {
       alert("Category Added!");
       document.getElementById("categoryForm").reset();
       loadCategories();
