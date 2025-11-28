@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Order = require("../models/orderModel");
-const { isloggedIn} = require("../middleware/isloggedIn");
+const { isloggedIn} = require("../middlewares/isloggedIn");
 const {isAdmin } = require('../middlewares/isAdmin')
 
 // Get all orders (ADMIN ONLY)
@@ -16,7 +16,7 @@ router.get("/", isloggedIn, isAdmin, async (req, res) => {
 
 // creare order route
 
-router.post("/", isloggedIn, async (req, res) => {
+router.post("/", isloggedIn , async (req, res) => {
   try {
     const {
       firstName, lastName, email, phone, address,
@@ -27,9 +27,13 @@ router.post("/", isloggedIn, async (req, res) => {
     if (!items || !items.length) {
       return res.status(400).json({ error: "Order must contain items" });
     }
+    // Make sure req.user exists
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ success: false, message: 'User authentication failed' });
+    }
 
     const newOrder = await Order.create({
-      user: req.user._id,
+      user: req.user.id,
       shippingDetails: {
         firstName,
         lastName,

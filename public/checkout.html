@@ -120,7 +120,7 @@
               </div>
             </div>
             
-            <button class="btn btn-primary btn-full" onclick="placeOrder()">Place Order</button>
+            <button class="btn btn-primary btn-full" onclick="handlePlaceOrder()">Place Order</button>
           </div>
         </aside>
       </div>
@@ -166,7 +166,7 @@
       document.getElementById('grandTotal').textContent = `$${total.toFixed(2)}`;
     }
 
-    function placeOrder() {
+    async function handlePlaceOrder() {
       const form = document.getElementById('checkoutForm');
       
       if (!form.checkValidity()) {
@@ -204,16 +204,19 @@
         total: getCartTotal() + SHIPPING_COST + (getCartTotal() * TAX_RATE)
       };
       
-      console.log('Order placed:', orderData);
+      const res = await placeOrder(orderData);
       
       clearCart();
-      showNotification('Order placed successfully!');
       
-      setTimeout(() => {
-        alert('Thank you for your order! This is a demo - no actual payment was processed.\n\nOrder Total: $' + orderData.total.toFixed(2));
-        window.location.href = '/';
-      }, 1000);
+      if (res.success) {
+        alert("Order placed successfully!");
+        localStorage.removeItem("cart");
+        window.location.href = "/ordersuccess";
+      } else {
+        alert("Something went wrong");
+      }
     }
+      
 
     const user = getCurrentUser();
     if (user) {

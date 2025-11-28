@@ -265,6 +265,26 @@ try {
   }
 
 
+  // order related routes
+
+  async function placeOrder(orderData) {
+  const res = await fetch(`${API_BASE_URL}/orders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(orderData),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+      throw new Error(data.error || 'Failed to delete category');
+    };
+  
+   return data ; 
+}
+
+
 
 
 
