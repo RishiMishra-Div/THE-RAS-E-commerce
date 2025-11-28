@@ -79,13 +79,24 @@
   protectAdminPage();
 
 
-  let allUsers = [];
-
-  // Fetch users
+  let allUsers = []; // declare globally
   async function loadUsers() {
-    const res = await fetch(`${API_BASE_URL}/users`, { credentials: "include" });
-    allUsers = await res.json();
-    renderUsers(allUsers);
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/allUsers`, { credentials: "include" });
+      const data = await res.json();
+
+      if (!data.success) {
+        alert("Failed to load users");
+        return;
+      }
+
+      allUsers = data.users; // store globally
+
+      renderUsers(allUsers);
+
+    } catch (error) {
+      alert("Error loading users");
+    }
   }
 
 

@@ -180,13 +180,6 @@
         return;
       }
       
-      if (!isLoggedIn()) {
-        if (confirm('You need to login to place an order. Go to login page?')) {
-          window.location.href = '/login?redirect=checkout';
-        }
-        return;
-      }
-      
       const orderData = {
         firstName: document.getElementById('firstName').value,
         lastName: document.getElementById('lastName').value,
@@ -206,14 +199,23 @@
       
       const res = await placeOrder(orderData);
       
-      clearCart();
+  
       
       if (res.success) {
+        clearCart();
         alert("Order placed successfully!");
         localStorage.removeItem("cart");
         window.location.href = "/ordersuccess";
       } else {
-        alert("Something went wrong");
+        const loggedIn = await isLoggedIn();
+
+        if (!loggedIn) {
+          if (confirm('You need to login to place an order. Go to login page?')) {
+            window.location.href = '/login?redirect=checkout';
+          }
+          return;
+        }
+        alert("Something went wrong");;
       }
     }
       

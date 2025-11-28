@@ -20,17 +20,19 @@ app.use(cookieParser());
 const db = require('./config/mongodbConnection');
 
 // Import routes
-const userRouter = require('./routes/userRouter');
+const authRouter = require('./routes/authRouter');
 const productRouter = require('./routes/productRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const orderRouter = require('./routes/orderRouter');
+const userRouter = require('./routes/userRouter');
 
 
 // API Routes
-app.use('/api/auth', userRouter);
+app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
 app.use('/api/admin/categories', categoryRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/users' , userRouter);
 
 
 
