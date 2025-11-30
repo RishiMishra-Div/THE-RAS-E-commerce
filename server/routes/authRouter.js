@@ -6,7 +6,6 @@ const {isloggedIn} = require('../middlewares/isloggedIn')
 router.get('/', (req, res) => {
     res.send('Welcome user');
 });
-
 router.post('/signup', registerUser);
 
 router.post('/login', loginUser);

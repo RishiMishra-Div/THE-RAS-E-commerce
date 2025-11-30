@@ -25,6 +25,7 @@ const productRouter = require('./routes/productRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const orderRouter = require('./routes/orderRouter');
 const userRouter = require('./routes/userRouter');
+const adminRouter = require('./routes/adminRouter');
 
 
 // API Routes
@@ -33,6 +34,7 @@ app.use('/api/products', productRouter);
 app.use('/api/admin/categories', categoryRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users' , userRouter);
+app.use('/admin', adminRouter);
 
 
 
@@ -65,44 +67,9 @@ app.get('/checkout', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/checkout.html'));
 });
 
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminpanel.html'));
-});
-
 app.get('/account', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/account.html'));
 });
-
-// admin panel routes
-
-app.get('/admin/addProduct', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminPanel/addProduct.html'));
-});
-
-
-app.get('/admin/manageProduct', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-manage-products.html'));
-});
-
-app.get('/admin/edit/product', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-edit-product.html'));
-});
-
-app.get('/admin/categories', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-categories.html'));
-});
-
-app.get('/admin/orders', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-orders.html'));
-});
-
-
-app.get('/admin/users', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/adminPanel/admin-users.html'));
-});
-
-
-
 
 
 
