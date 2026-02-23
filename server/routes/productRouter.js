@@ -5,7 +5,9 @@ const Product = require('../models/productModel');
 const { isloggedIn} = require('../middlewares/isloggedIn');
 const{isAdmin} = require('../middlewares/isAdmin')
 
-// GET all products (public route)
+
+// --------------GET all products (public route)--------------------
+
 router.get('/', async (req, res) => {
   try {
     const { category } = req.query;
@@ -20,7 +22,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET categories (public route) - must be before /:id route to avoid matching "categories" as an ID
+
+
+// ----------------GET categories (public route) - must be before /:id route to avoid matching "categories" as an ID --------------------
+
 router.get('/categories/list', async (req, res) => {
   try {
     const categories = await Product.distinct('category');
@@ -30,7 +35,10 @@ router.get('/categories/list', async (req, res) => {
   }
 });
 
-// GET single product by ID (public route)
+
+
+// ----------------GET single product by ID (public route)---------------------
+
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -45,7 +53,10 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// CREATE new product (admin only)
+
+
+// ------------------CREATE new product (admin only)----------------------
+
 router.post('/', isloggedIn , isAdmin , async (req, res) => {
   try {
     const { title, description, price, category, stock, image } = req.body;
@@ -66,7 +77,10 @@ router.post('/', isloggedIn , isAdmin , async (req, res) => {
   }
 });
 
-// UPDATE product (admin only)
+
+
+//------------------------ UPDATE product (admin only)-----------------------
+
 router.put('/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const { title, description, price, category, stock, image } = req.body;
@@ -87,7 +101,10 @@ router.put('/:id', isloggedIn, isAdmin, async (req, res) => {
   }
 });
 
-// DELETE product (admin only)
+
+
+// --------------------DELETE product (admin only)------------------------
+
 router.delete('/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -102,4 +119,5 @@ router.delete('/:id', isloggedIn, isAdmin, async (req, res) => {
   }
 });
 
+// ------------------ export module ----------------------
 module.exports = router;

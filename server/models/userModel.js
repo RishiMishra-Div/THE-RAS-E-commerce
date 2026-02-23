@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     //  verification otp expiry time
   verifyotpexpiry :{
       type: Number,
-      defoult:0
+      default:0
   },
 
     // verification checkup

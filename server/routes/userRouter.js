@@ -5,7 +5,8 @@ const userModel = require('../models/userModel');
 const { isloggedIn } = require('../middlewares/isloggedIn');
 const { isAdmin } = require('../middlewares/isAdmin');
 
-// Get all users (Admin Only)
+// ----------------Get all users (Admin Only)--------------------
+
 router.get('/allUsers', isloggedIn, isAdmin, async (req, res) => {
   try {
     // fetch all users except password field
@@ -26,7 +27,9 @@ router.get('/allUsers', isloggedIn, isAdmin, async (req, res) => {
   }
 });
 
+
 // ------------------- CHANGE USER ROLE -------------------
+
 router.put('/role/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const { role } = req.body;
@@ -56,6 +59,7 @@ router.put('/role/:id', isloggedIn, isAdmin, async (req, res) => {
 
 
 // ------------------- BLOCK / UNBLOCK USER -------------------
+
 router.put('/block/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const { isBlocked } = req.body;
@@ -85,6 +89,7 @@ router.put('/block/:id', isloggedIn, isAdmin, async (req, res) => {
 
 
 // ------------------- DELETE USER -------------------
+
 router.delete('/:id', isloggedIn, isAdmin, async (req, res) => {
   try {
     const deletedUser = await userModel.findByIdAndDelete(req.params.id);
