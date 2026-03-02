@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirm Order - THE RAS</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/checkout.css">
+</head>
+<body>
+
+<section class="section">
+  <div class="container">
+
+    <!-- Progress -->
+    <div class="progress-bar">
+      <div class="step completed">1. Details</div>
+      <div class="step active">2. Confirm</div>
+      <div class="step">3. Done</div>
+    </div>
+
+    <h1>Order Confirmation</h1>
+
+  <div class="confirmation-content">
+    <p>Please review your order details before placing the order.</p>
+
+    <!-- Personal Info -->
+    <div class="card">
+      <h3>Shipping Info</h3>
+      <div id="userInfo"></div>
+      <button onclick="editDetails()" class="btn btn-secondary">Edit</button>
+    </div>
+
+    <!-- Cart Items -->
+    <div class="card">
+      <h3>Items</h3>
+      <div id="orderItems"></div>
+    </div>
+
+    <!-- Totals -->
+    <div class="card">
+      <h3>Summary</h3>
+      <p>Subtotal: ₹<span id="subtotal"></span></p>
+      <p>Shipping: ₹10</p>
+      <p>Tax: ₹<span id="tax"></span></p>
+      <h2>Total: ₹<span id="total"></span></h2>
+    </div>
+
+  </div>
+
+    <button id="placeBtn" class="btn btn-primary btn-full" onclick="placeOrderNow()">
+      Place Order
+    </button>
+
+    <div id="loading" class="loading hidden">Processing...</div>
+
+  </div>
+</section>
+
+<script src="/js/cart.js"></script>
+<script src="/js/api.js"></script>
+
+<script>
+const SHIPPING = 10;
+const TAX = 0.08;
+
+function loadPage() {
+  const user = JSON.parse(localStorage.getItem("checkoutDetails"));
+  const cart = getCart();
+
+  if (!user) {
+    window.location.href = "/checkout";
+    return;
+  }
+
+  if (cart.length === 0) {
+    alert("Cart is empty");
+    window.location.href = "/";
+    return;
+  }
+
+  userInfo.innerHTML = `
+    <p>${user.firstName} ${user.lastName}</p>
+    <p>${user.email}</p>
+    <p>${user.phone}</p>
+    <p>${user.address}, ${user.city}, ${user.state}</p>
+  `;
+
+  orderItems.innerHTML = cart.map(item => `
+    <div class="order-item">
+      <span>${item.title} × ${item.quantity}</span>
+      <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+    </div>
+  `).join("");
+
+  const subtotal = getCartTotal();
+  const tax = subtotal * TAX;
+  const total = subtotal + SHIPPING + tax;
+
+  subtotalSpan = document.getElementById("subtotal");
+  taxSpan = document.getElementById("tax");
+  totalSpan = document.getElementById("total");
+
+  subtotalSpan.textContent = subtotal.toFixed(2);
+  taxSpan.textContent = tax.toFixed(2);
+  totalSpan.textContent = total.toFixed(2);
+}
+
+function editDetails() {
+  window.location.href = "/checkout";
+}
+
+async function placeOrderNow() {
+  const btn = document.getElementById("placeBtn");
+  const loader = document.getElementById("loading");
+
+  btn.disabled = true;
+  loader.classList.remove("hidden");
+
+  const user = JSON.parse(localStorage.getItem("checkoutDetails"));
+  const cart = getCart();
+
+  const orderData = {
+    ...user,
+    items: cart,
+    subtotal: getCartTotal(),
+    shipping: SHIPPING,
+    tax: getCartTotal() * TAX,
+    total: getCartTotal() + SHIPPING + (getCartTotal() * TAX)
+  };
+
+  const res = await placeOrder(orderData);
+
+  if (res.success) {
+    clearCart();
+    localStorage.removeItem("checkoutDetails");
+    window.location.href = "/ordersuccess";
+  } else {
+    alert("Something went wrong");
+    btn.disabled = false;
+    loader.classList.add("hidden");
+  }
+}
+
+loadPage();
+</script>
+
+</body>
+</html>

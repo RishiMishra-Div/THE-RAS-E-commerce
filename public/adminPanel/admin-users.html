@@ -12,14 +12,14 @@
 <aside class="sidebar">
   <div class="sidebar-header">
     <h2>THE RAS</h2>
-    <p class="role-badge">ADMIN</p>
+     <a class="role-badge" href="/">Back to store</a>
   </div>
 
   <nav class="sidebar-menu">
     <a href="/admin">🏠 Dashboard</a>
     <a href="/admin/addProduct">➕ Add Product</a>
     <a href="/admin/manageProduct">🛍 Manage Products</a>
-    <a href="/admin/categories">📂 Categories</a>
+    <!-- <a href="/admin/categories">📂 Categories</a> -->
     <a href="/admin/orders">📄 Orders</a>
     <a class="active" href="#">👤 Manage Users</a>
   </nav>
@@ -53,7 +53,6 @@
       <tr>
         <th>#</th>
         <th>User Info</th>
-        <th>Role</th>
         <th>Status</th>
         <th>Joined</th>
         <th>Action</th>
@@ -119,10 +118,6 @@
         </td>
 
         <td>
-          <span class="badge badge-${u.role}">${u.role.toUpperCase()}</span>
-        </td>
-
-        <td>
           <span class="badge badge-${u.isBlocked ? "blocked" : "active"}">
             ${u.isBlocked ? "BLOCKED" : "ACTIVE"}
           </span>
@@ -131,10 +126,6 @@
         <td>${new Date(u.createdAt).toLocaleDateString()}</td>
 
         <td>
-          ${u.role !== "admin" ? 
-            `<button class="action-btn promote" onclick="changeRole('${u._id}', 'admin')">Make Admin</button>` :
-            `<button class="action-btn demote" onclick="changeRole('${u._id}', 'user')">Remove Admin</button>`
-          }
 
           ${!u.isBlocked ?
             `<button class="action-btn block" onclick="blockUser('${u._id}', true)">Block</button>` :

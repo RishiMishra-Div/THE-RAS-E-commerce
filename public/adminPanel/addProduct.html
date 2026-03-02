@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Product - Admin Panel | THE RAS</title>
   <link rel="stylesheet" href="../css/admin.css">
 </head>
+
 <body>
 
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>THE RAS</h2>
-      <p class="role-badge">ADMIN</p>
+      <a class="role-badge" href="/">Back to store</a>
     </div>
 
     <nav class="sidebar-menu">
       <a href="/admin">🏠 Dashboard</a>
       <a class="active" href="#">➕ Add Product</a>
       <a href="/admin/manageProduct">🛍 Manage Products</a>
-      <a href="/admin/categories">📂 Manage Categories</a>
+      <!-- <a href="/admin/categories">📂 Manage Categories</a> -->
       <a href="/admin/orders">📄 Manage Orders</a>
       <a href="/admin/users">👤 Manage Users</a>
     </nav>
@@ -28,13 +30,13 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="main-content">
-    <header class="admin-header">
+  <main class="main-content-addproduct">
+
+    <form id="productForm" class="product-form">
+      <header class="admin-header">
       <h1>Add New Product</h1>
       <p>Fill product details and publish to the store 🚀</p>
     </header>
-
-    <form id="productForm" class="product-form">
 
       <div class="form-group">
         <label>Product Title *</label>
@@ -75,63 +77,64 @@
   </main>
 
 
-<script src="../js/api.js"></script>
-<script>
+  <script src="../js/api.js"></script>
+  <script>
 
-  // Protect Page
-  async function protectAdminPage() {
-    const user = await getCurrentUser();
-    if (!user || user.role !== "admin") {
-      alert("Unauthorized access!");
-      window.location.href = "/";
+    // Protect Page
+    async function protectAdminPage() {
+      const user = await getCurrentUser();
+      if (!user || user.role !== "admin") {
+        alert("Unauthorized access!");
+        window.location.href = "/";
+      }
     }
-  }
 
-  protectAdminPage();
+    protectAdminPage();
 
 
-  // Load Categories from backend
-  async function loadCategories() {
-    try {
+    // Load Categories from backend
+    async function loadCategories() {
+      try {
 
-      const categories = await getCategories()
+        const categories = await getCategories()
 
-      const select = document.getElementById("category");
-      select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+        const select = document.getElementById("category");
+        select.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
 
-    } catch (err) {
-      alert("Error loading categories");
+      } catch (err) {
+        alert("Error loading categories");
+      }
     }
-  }
 
-  loadCategories();
+    loadCategories();
 
 
-  // Submit Form
-  document.getElementById("productForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    // Submit Form
+    document.getElementById("productForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    const product = {
-      title: document.getElementById("title").value,
-      description: document.getElementById("description").value,
-      category: document.getElementById("category").value,
-      price: Number(document.getElementById("price").value),
-      stock: Number(document.getElementById("stock").value),
-      image: document.getElementById("image").value,
-    };
+      const product = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        category: document.getElementById("category").value,
+        price: Number(document.getElementById("price").value),
+        stock: Number(document.getElementById("stock").value),
+        image: document.getElementById("image").value,
+      };
 
-    const response = await createProduct(product);
+      const response = await createProduct(product);
 
-    if (response) {
-      alert("Product added successfully!");
-      document.getElementById("productForm").reset();
-    } else {
-      alert("Error adding product");
-    }
-  });
+      if (response) {
+        alert("Product added successfully!");
+        document.getElementById("productForm").reset();
+      } else {
+        alert("Error adding product");
+      }
+    });
 
-  document.getElementById("logoutBtn").addEventListener("click", logout);
+    document.getElementById("logoutBtn").addEventListener("click", logout);
 
-</script>
+  </script>
 </body>
+
 </html>
