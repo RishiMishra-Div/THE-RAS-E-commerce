@@ -56,6 +56,7 @@
   </div>
 </section>
 
+<script src="/js/config.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/api.js"></script>
 
@@ -68,13 +69,13 @@ function loadPage() {
   const cart = getCart();
 
   if (!user) {
-    window.location.href = "/checkout";
+    window.location.href = "/checkout.html";
     return;
   }
 
   if (cart.length === 0) {
     alert("Cart is empty");
-    window.location.href = "/";
+    window.location.href = "/products.html";
     return;
   }
 
@@ -106,7 +107,7 @@ function loadPage() {
 }
 
 function editDetails() {
-  window.location.href = "/checkout";
+  window.location.href = "/checkout.html";
 }
 
 async function placeOrderNow() {

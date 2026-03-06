@@ -1,0 +1,1 @@
+const API_BASE_URL = 'https://the-ras-e-commerce-backend.onrender.com/api';
