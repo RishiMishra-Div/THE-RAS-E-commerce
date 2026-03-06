@@ -9,7 +9,11 @@ const app = express();
 
 
 // Middleware
-app.use(cors()); // Allow cross-origin requests
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, '../public'))); // Serve static files from public folder
 app.use(express.urlencoded({ extended: true }));
@@ -36,11 +40,14 @@ app.use('/api/orders', orderRouter);
 app.use('/api/users' , userRouter);
 app.use('/admin', adminRouter);
 
-
+// Test route
+app.get("/", (req, res) => {
+  res.send("RAS Backend Running 🚀");
+});
 
 
 // Start server
-const PORT =4000;
+const PORT =process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on : ${PORT}`);
 });
