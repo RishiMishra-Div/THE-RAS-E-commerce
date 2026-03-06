@@ -38,40 +38,6 @@ app.use('/admin', adminRouter);
 
 
 
-// Serve HTML pages
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
-app.get('/products', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/products.html'));
-});
-
-app.get('/product-detail', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/product-detail.html'));
-});
-
-app.get('/cart', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/cart.html'));
-});
-
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/login.html'));
-});
-
-app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/signup.html'));
-});
-
-app.get('/checkout', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/checkout.html'));
-});
-
-app.get('/account', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/account.html'));
-});
-
-
 
 // Start server
 const PORT =4000;

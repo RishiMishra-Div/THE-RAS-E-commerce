@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>THE RAS - Your Modern E-Commerce Store</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+
 </head>
 <body>
   <!-- Header -->
@@ -17,25 +22,42 @@
       </div>
       
       <div class="header-actions">
-        <a href="/cart" class="cart-icon">
+        <a href="/cart.html" class="cart-icon">
           🛒
           <span class="cart-count">0</span>
         </a>
-        <a href="/login" class="btn btn-primary" id="authBtn">Login</a>
+        <a href="/login.html" class="btn btn-primary" id="authBtn">Login</a>
       </div>
     </div>
   </header>
 
   <!-- Hero Banner -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <h1>Welcome to THE RAS</h1>
-        <p>Discover amazing products at unbeatable prices</p>
-        <a href="/products" class="btn btn-secondary">Shop Now</a>
-      </div>
-    </div>
+
   </section>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      
+      <div class="swiper-slide">
+        <img src="https://cms-toolkit-artifacts.artlist.io/content/-t-e-x-t_-t-o_-i-m-a-g-e-v1/media__4/image-dcd3123d-a64a-45d8-aa8c-bf340f4e2b01.png?Expires=2087874400&Key-Pair-Id=K2ZDLYDZI2R1DF&Signature=E2NCyAd8oxRaPub6Xv3WKcus7OoDUlpQvWxCFc-x9--kSDMFmYHwd3qmQHL4OxXNv~3xpavd89ABKQnIMkeW-O~-Fam7UDOx2WvpFQhBHil8nkieQNPB3LezmL9uoSHmArWsE~Fd6jmw2HwDj3fB~~-qEwrmMrxAxH1Uhq7iAmBUobLegixZ2fZQlrVq3xvkEFdxdbjGOzkUtQsmD54MBruHsLHvy3w2tPOr9umvCHNUd09m4~nmLF8hcRJeloc6dtlK8MS1t~tCayB7pcDib~8ugiKeONrB8io4F7caUhC9-UPSv6gLIXx8X1t~onsQAdzMYBlVOikMsSsFwXWaNA__" alt="Banner 1">
+      </div>
+  
+      <div class="swiper-slide">
+        <img src="https://rukminim2.flixcart.com/fk-p-flap/3240/1580/image/0f5faf3b9ad510ba.png?q=60" alt="Banner 2">
+      </div>
+  
+      <div class="swiper-slide">
+        <img src="https://rukminim2.flixcart.com/fk-p-flap/3240/1580/image/386bbecfd373df45.jpg?q=60" alt="Banner 3">
+      </div>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="swiper-pagination"></div>
+
+    <!-- Navigation -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
 
   <!-- Shop by Category Section -->
   <section class="section">
@@ -70,23 +92,28 @@
           <h3>Quick Links</h3>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/products">Shop</a></li>
-            <li><a href="/cart">Cart</a></li>
-            <li><a href="/login">Account</a></li>
+            <li><a href="/products.html">Shop</a></li>
+            <li><a href="/cart.html">Cart</a></li>
+            <li><a href="/login.html">Account</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
           <h3>Policies</h3>
           <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Shipping Policy</a></li>
-            <li><a href="#">Return Policy</a></li>
+            <li><a href="/pages/privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="/pages/terms-of-service.html">Terms of Service</a></li>
+            <li><a href="/pages/shipping-policy.html">Shipping Policy</a></li>
+            <li><a href="/pages/return-policy.html">Return Policy</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
+          <h3>Contact Us</h3>
+          <P>Email: support@theras.com</P>
+          <P>Phone: +91 XXXXXXXX</P>
+          <P>Address: uttar pradesh, India</P>
+           <br>
           <h3>Follow Us</h3>
           <div class="social-icons">
             <a href="#">📘</a>
@@ -105,6 +132,29 @@
   <!-- Scripts -->
   <script src="/js/api.js"></script>
   <script src="/js/cart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+  var swiper = new Swiper(".mySwiper", {
+  slidesPerView: 1,
+  spaceBetween: 0,
+  loop: true,
+
+  autoplay: {
+    delay: 3000,
+    disableOnInteraction: false,
+  },
+
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+});
+</script>
   <script>
     // Category icons mapping
     const categoryData = [
@@ -185,11 +235,11 @@
       const user = await getCurrentUser();
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
-        authBtn.href = user.role === 'admin' ? '/admin' : '/account';
+        authBtn.href = user.role === 'admin' ? '/admin.html' : '/account.html';
         authBtn.onclick = null; 
       } else {
         authBtn.textContent = 'Login';
-        authBtn.href = '/login';
+        authBtn.href = '/login.html';
         authBtn.onclick = null;
       }
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products - THE RAS</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
   <style>
     .filter-section {
       margin-bottom: 32px;
@@ -51,11 +51,11 @@
       </div>
       
       <div class="header-actions">
-        <a href="/cart" class="cart-icon">
+        <a href="/cart.html" class="cart-icon">
           🛒
           <span class="cart-count">0</span>
         </a>
-        <a href="/login" class="btn btn-primary" id="authBtn">Login</a>
+        <a href="/login.html" class="btn btn-primary" id="authBtn">Login</a>
       </div>
     </div>
   </header>
@@ -93,23 +93,28 @@
           <h3>Quick Links</h3>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/products">Shop</a></li>
-            <li><a href="/cart">Cart</a></li>
-            <li><a href="/login">Account</a></li>
+            <li><a href="/products.html">Shop</a></li>
+            <li><a href="/cart.html">Cart</a></li>
+            <li><a href="/login.html">Account</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
           <h3>Policies</h3>
           <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-            <li><a href="#">Shipping Policy</a></li>
-            <li><a href="#">Return Policy</a></li>
+            <li><a href="/pages/privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="/pages/terms-of-service.html">Terms of Service</a></li>
+            <li><a href="/pages/shipping-policy.html">Shipping Policy</a></li>
+            <li><a href="/pages/return-policy.html">Return Policy</a></li>
           </ul>
         </div>
         
         <div class="footer-section">
+          <h3>Contact Us</h3>
+          <P>Email: support@theras.com</P>
+          <P>Phone: +91 XXXXXXXX</P>
+          <P>Address: uttar pradesh, India</P>
+           <br>
           <h3>Follow Us</h3>
           <div class="social-icons">
             <a href="#">📘</a>
@@ -126,8 +131,8 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="./js/api.js"></script>
-  <script src="./js/cart.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/cart.js"></script>
   <script>
     let allProducts = [];
     let currentCategory = '';
@@ -249,11 +254,11 @@
       const user = await getCurrentUser();
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
-        authBtn.href = user.role === 'admin' ? '/admin' : '/account';
+        authBtn.href = user.role === 'admin' ? '/admin.html' : '/account.html';
         authBtn.onclick = null; 
       } else {
         authBtn.textContent = 'Login';
-        authBtn.href = '/login';
+        authBtn.href = '/login.html';
         authBtn.onclick = null;
       }
 

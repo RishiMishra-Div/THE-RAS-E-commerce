@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - THE RAS</title>
-  <link rel="stylesheet" href="./css/admin.css">
+  <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
 
@@ -17,11 +17,11 @@
 
     <nav class="sidebar-menu">
       <a href="#" class="active">🏠 Dashboard</a>
-      <a href="/admin/addProduct">➕ Add Product</a>
-      <a href="/admin/manageProduct">🛍 Manage Products</a>
-      <!-- <a href="/admin/categories">📂 Manage Categories</a> -->
-      <a href="/admin/orders">📄 Manage Orders</a>
-      <a href="/admin/users">👤 Manage Users</a>
+      <a href="/adminPanel/addProduct.html">➕ Add Product</a>
+      <a href="/adminPanel/admin-manage-products.html">🛍 Manage Products</a>
+      <!-- <a href="/adminPanel/categories.html">📂 Manage Categories</a> -->
+      <a href="/adminPanel/admin-orders.html">📄 Manage Orders</a>
+      <a href="/adminPanel/admin-users.html">👤 Manage Users</a>
     </nav>
 
     <button id="logoutBtn" class="logout-btn">Logout</button>
@@ -38,22 +38,22 @@
     <section class="stats-grid">
       <div class="stat-card">
         <h3>Total Products</h3>
-        <span id="statProducts">0</span>
+        <span id="statProducts"></span>
       </div>
 
       <div class="stat-card">
         <h3>Total Orders</h3>
-        <span id="statOrders">0</span>
+        <span id="statOrders"></span>
       </div>
 
       <div class="stat-card">
         <h3>Total Users</h3>
-        <span id="statUsers">0</span>
+        <span id="statUsers"></span>
       </div>
 
       <div class="stat-card">
         <h3>Total Revenue</h3>
-        <span id="statRevenue">₹0</span>
+        <span id="statRevenue"></span>
       </div>
     </section>
 
@@ -63,7 +63,7 @@
     </section>
   </main>
 
-  <script src="./js/api.js"></script>
+  <script src="/js/api.js"></script>
   <script>
     async function protectAdminPage() {
       const user = await getCurrentUser();
@@ -77,6 +77,62 @@
     document.getElementById("logoutBtn").addEventListener("click", () => logout());
 
     protectAdminPage();
+
+
+    // TODO: Fetch and display stats (products, orders, users, revenue) using API calls
+    async function displayProductCount() {
+        try {
+          // get products from API
+          const products = await getProducts();
+      
+          // count products
+          const totalProducts = products.length;
+      
+          // display in HTML
+          document.getElementById("statProducts").textContent = totalProducts;
+      
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        }
+   }
+
+
+
+        
+    //count users 
+    let allUsers = []; // declare globally
+    
+    async function loadUsers() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/users/allUsers`, {
+          credentials: "include"
+        });
+    
+        const data = await res.json();
+    
+        if (!data.success) {
+          alert("Failed to load users");
+          return;
+        }
+    
+        allUsers = data.users; // store globally
+    
+        // count users
+        const totalUsers = allUsers.length;
+    
+        // display count in dashboard
+        document.getElementById("statUsers").textContent = totalUsers;
+    
+      } catch (error) {
+        console.error("Error loading users:", error);
+        alert("Error loading users");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUsers();
+      displayProductCount();
+    });
   </script>
 
 </body>

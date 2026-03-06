@@ -3,6 +3,11 @@ body {
   font-family: Poppins, sans-serif;
   display: flex;
   background: #f7f7f7;
+
+}
+/* global borderbox css */
+* {
+  box-sizing: border-box;
 }
 
 /* Sidebar */
@@ -103,7 +108,7 @@ body {
 }
 
 
-/* add product css */
+/* --------------------add product css--------------------------------------------------- */
 
 .main-content-addproduct {
   width: 100%;
@@ -112,11 +117,6 @@ body {
   align-items: center;
   
 } 
-
-/* global borderbox css */
-* {
-  box-sizing: border-box;
-}
 
 .product-form {
   width: 100%;
@@ -129,11 +129,7 @@ body {
   margin-top: 30px;
   background: #ffffff;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-
-
 }
-
-
 
 .form-group-inline {
   display: flex;
@@ -173,7 +169,7 @@ textarea {
 }
 
 
-/* manage product css */
+/* --------------------manage product css--------------------------------------------------- */
 
  .search-box {
   margin: 20px 0;
@@ -231,7 +227,7 @@ textarea {
   color: white;
 }
 
-/* admin categories */
+/*----------------------------- admin categories --------------------------------*/
 .main-content-categories {
   padding: 30px;
   width: 100%;
@@ -262,7 +258,8 @@ textarea {
   color: #fff;
 }
 
-/* manage user css */
+
+/* --------------------manage user css--------------------------------------------------- */
 .user-table{
   width: 100%;
   border-collapse: collapse;
@@ -302,7 +299,7 @@ textarea {
 .action-btn.unblock { background: #28a745; color: #fff; }
 
 
-/* manage order css */
+/* --------------------manage order css--------------------------------------------------- */
 
 .order-table{
   width: 100%;
