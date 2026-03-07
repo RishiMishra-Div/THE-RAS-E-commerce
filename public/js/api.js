@@ -1,7 +1,7 @@
 // API Helper Functions - Makes it easy to communicate with the backend
 
 // Base URL for API (change this if your backend is on a different port)
-const API_BASE_URL = 'https://the-ras-e-commerce-backend.onrender.com/api';
+
 
 // Helper function to get current user from backend (MongoDB)
 async function getCurrentUser() {
