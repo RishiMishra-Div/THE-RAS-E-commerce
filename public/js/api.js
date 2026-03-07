@@ -17,6 +17,7 @@ async function getCurrentUser() {
     }
 
     const user = await response.json();
+    console.log('Current user:', user);
     return user; // this is user from MongoDB
 
   } catch (err) {
