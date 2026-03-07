@@ -94,7 +94,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/products.html">Shop</a></li>
             <li><a href="/cart.html">Cart</a></li>
-            <li><a href="/login.html">Account</a></li>
+            <li><a href="/account.html">Account</a></li>
           </ul>
         </div>
         
@@ -174,7 +174,7 @@
       const categoryGrid = document.getElementById('categoryGrid');
 
       categoryGrid.innerHTML = categoryData.map(category => `
-      <a href="/products?category=${encodeURIComponent(category.name)}" class="category-card">
+      <a href="/products.html?category=${encodeURIComponent(category.name)}" class="category-card">
         <div class="category-icon">${category.icon}</div>
         <div class="category-name">${category.name}</div>
       </a>
@@ -194,7 +194,7 @@
         
         // Show first 8 products
         productGrid.innerHTML = products.slice(0, 8).map(product => `
-          <div class="product-card" onclick="window.location.href='/product-detail?id=${product._id}'">
+          <div class="product-card" onclick="window.location.href='/product-detail.html?id=${product._id}'">
             <img src="${product.image}" alt="${product.title}" class="product-image">
             <div class="product-info">
               <h3 class="product-title">${product.title}</h3>

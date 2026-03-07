@@ -24,9 +24,9 @@
       </div>
 
       <div class="account-actions">
-        <a href="/orders" class="btn btn-secondary">My Orders</a>
-        <a href="/wishlist" class="btn btn-secondary">Wishlist</a>
-        <a href="/addresses" class="btn btn-secondary">Manage Address</a>
+        <a href="/orders.html" class="btn btn-secondary">My Orders</a>
+        <a href="/wishlist.html" class="btn btn-secondary">Wishlist</a>
+        <a href="/addresses.html" class="btn btn-secondary">Manage Address</a>
         <button id="logoutBtn" class="btn btn-danger">Logout</button>
       </div>
     </div>
@@ -37,7 +37,7 @@
     async function loadAccountPage() {
       const user = await getCurrentUser();
       if (!user) {
-        window.location.href = '/login';
+        window.location.href = '/login.html?redirect=account';
         return;
       }
 

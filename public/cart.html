@@ -50,7 +50,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/products.html">Shop</a></li>
             <li><a href="/cart.html">Cart</a></li>
-            <li><a href="/login.html">Account</a></li>
+            <li><a href="/account.html">Account</a></li>
           </ul>
         </div>
         
@@ -101,7 +101,7 @@
             <div class="empty-cart-icon">🛒</div>
             <h3>Your cart is empty</h3>
             <p>Add some products to get started!</p>
-            <a href="/products" class="btn btn-primary" style="margin-top: 24px;">Continue Shopping</a>
+            <a href="/products.html" class="btn btn-primary" style="margin-top: 24px;">Continue Shopping</a>
           </div>
         `;
         return;
@@ -184,7 +184,7 @@
     function proceedToCheckout() {
       if (!isLoggedIn()) {
         alert('Please login to proceed to checkout');
-        window.location.href = '/login?redirect=checkout';
+        window.location.href = '/login.html?redirect=checkout';
         return;
       }
       window.location.href = '/checkout.html';
@@ -195,7 +195,7 @@
       if (e.key === 'Enter') {
         const searchTerm = e.target.value;
         if (searchTerm) {
-          window.location.href = `/products?search=${encodeURIComponent(searchTerm)}`;
+          window.location.href = `/products.html?search=${encodeURIComponent(searchTerm)}`;
         }
       }
     });
