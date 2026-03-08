@@ -234,6 +234,7 @@
     async function updateAuthButton() {
       const authBtn = document.getElementById('authBtn');
       const user = await getCurrentUser();
+      console.log('Current user:', user);
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
         authBtn.href = user.role === 'admin' ? '/admin.html' : '/account.html';

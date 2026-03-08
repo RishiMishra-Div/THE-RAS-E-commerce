@@ -10,7 +10,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: true,
+  origin: "https://the-ras-e-commerce.vercel.app",
   credentials: true
 }));
 
