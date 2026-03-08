@@ -60,6 +60,7 @@ async function logout() {
 async function signup(fullname, email, password) {
   const response = await fetch(`${API_BASE_URL}/auth/signup`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -83,6 +84,7 @@ async function signup(fullname, email, password) {
 async function login(email, password) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
+    credentials: 'include', // important to include cookies for session
     headers: {
       'Content-Type': 'application/json'
     },
