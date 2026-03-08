@@ -237,7 +237,7 @@
       console.log('Current user:', user);
       if (user) {
         authBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Account';
-        authBtn.href = user.role === 'admin' ? '/admin.html' : '/account.html';
+        authBtn.href = user.role === 'admin' ? '/adminpanel.html' : '/account.html';
         authBtn.onclick = null; 
       } else {
         authBtn.textContent = 'Login';
