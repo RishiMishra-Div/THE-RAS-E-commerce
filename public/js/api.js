@@ -138,13 +138,13 @@ async function getProduct(id) {
 
 // Create new product (admin only)
 async function createProduct(productData) {
-  // const token = getAuthToken();
+  const token = getAuthToken();
   
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify(productData)
   });
@@ -160,13 +160,13 @@ async function createProduct(productData) {
 
 // Update product (admin only)
 async function updateProduct(productId,updatedProduct) {
-  // const token = getAuthToken();
+  const token = getAuthToken();
   
   const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      // 'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify(updatedProduct)
   });
