@@ -138,13 +138,12 @@ async function getProduct(id) {
 
 // Create new product (admin only)
 async function createProduct(productData) {
-  const token = getAuthToken();
   
   const response = await fetch(`${API_BASE_URL}/products`, {
     method: 'POST',
+    credentials: 'include', // important to include cookies for session
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(productData)
   });
@@ -160,13 +159,12 @@ async function createProduct(productData) {
 
 // Update product (admin only)
 async function updateProduct(productId,updatedProduct) {
-  const token = getAuthToken();
   
   const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
     method: 'PUT',
+    credentials: 'include', // important to include cookies for session
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(updatedProduct)
   });
@@ -186,8 +184,9 @@ async function deleteProduct(id) {
   
   const response = await fetch(`${API_BASE_URL}/products/${id}`, {
     method: 'DELETE',
+    credentials: 'include' ,// important to include cookies for session
     headers: {
-      'Authorization': `Bearer ${token}`
+      'Content-Type': 'application/json'
     }
   });
   
