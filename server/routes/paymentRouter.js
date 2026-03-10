@@ -4,7 +4,7 @@ const express = require("express");
 const router = express.Router();
 
 const {createOrder,verifyPayment,getMyOrders,getOrder} = require("../controllers/paymentController");
-const isloggedIn = require("../middlewares/isloggedIn");
+const {isloggedIn}= require("../middlewares/isloggedIn");
 
 
 
