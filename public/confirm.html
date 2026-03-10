@@ -45,30 +45,45 @@
       <h2>Total: ₹<span id="total"></span></h2>
     </div>
 
-  </div>
+    <!-- Payment Method -->
+    <h3>Select Payment Method</h3>
+    
+    <label>
+      <input type="radio" name="paymentMethod" value="cod" checked>
+      Cash on Delivery
+    </label>
+    
+    <label>
+      <input type="radio" name="paymentMethod" value="online">
+      Pay Online
+    </label>
 
-    <button id="placeBtn" class="btn btn-primary btn-full" onclick="placeOrderNow()">
-      Place Order
-    </button>
-
-    <div id="loading" class="loading hidden">Processing...</div>
-
-  </div>
+    <!-- place order button -->
+    </div>
+  
+      <button id="placeBtn" class="btn btn-primary btn-full" onclick="placeOrderNow()">
+        Place Order
+      </button>
+  
+      <div id="loading" class="loading hidden">Processing...</div>
+  
+    </div>
 </section>
 
 <script src="/js/config.js"></script>
 <script src="/js/cart.js"></script>
 <script src="/js/api.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 const SHIPPING = 10;
 const TAX = 0.08;
 
 function loadPage() {
-  const user = JSON.parse(localStorage.getItem("checkoutDetails"));
+  const shippingDetails = JSON.parse(localStorage.getItem("checkoutDetails"));
   const cart = getCart();
 
-  if (!user) {
+  if (!shippingDetails) {
     window.location.href = "/checkout.html";
     return;
   }
@@ -78,14 +93,19 @@ function loadPage() {
     window.location.href = "/products.html";
     return;
   }
-
+ 
+  // Display user info
+  const userInfo = document.getElementById("userInfo");
   userInfo.innerHTML = `
-    <p>${user.firstName} ${user.lastName}</p>
-    <p>${user.email}</p>
-    <p>${user.phone}</p>
-    <p>${user.address}, ${user.city}, ${user.state}</p>
+    <p>${shippingDetails.firstName} ${shippingDetails.lastName}</p>
+    <p>${shippingDetails.email}</p>
+    <p>${shippingDetails.phone}</p>
+    <p>${shippingDetails.address}, ${shippingDetails.city}, ${shippingDetails.state}</p>
   `;
 
+
+  // Display order items
+  const orderItems = document.getElementById("orderItems");
   orderItems.innerHTML = cart.map(item => `
     <div class="order-item">
       <span>${item.title} × ${item.quantity}</span>
@@ -93,6 +113,8 @@ function loadPage() {
     </div>
   `).join("");
 
+
+  // Calculate totals
   const subtotal = getCartTotal();
   const tax = subtotal * TAX;
   const total = subtotal + SHIPPING + tax;
@@ -110,6 +132,8 @@ function editDetails() {
   window.location.href = "/checkout.html";
 }
 
+
+// ---------------------Place order--------------------------------------
 async function placeOrderNow() {
   const btn = document.getElementById("placeBtn");
   const loader = document.getElementById("loading");
@@ -117,29 +141,115 @@ async function placeOrderNow() {
   btn.disabled = true;
   loader.classList.remove("hidden");
 
-  const user = JSON.parse(localStorage.getItem("checkoutDetails"));
+ // Get selected payment method
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+  // Get shipping details from localStorage
+  const shippingDetails = JSON.parse(localStorage.getItem("checkoutDetails"));
+
+  // Get cart items
   const cart = getCart();
 
+  // Transform cart items to match backend format
+  const products= cart.map(item =>({
+  productId: item._id,
+  quantity: item.quantity
+
+  }))
+
+  // Prepare order data
   const orderData = {
-    ...user,
-    items: cart,
-    subtotal: getCartTotal(),
-    shipping: SHIPPING,
-    tax: getCartTotal() * TAX,
-    total: getCartTotal() + SHIPPING + (getCartTotal() * TAX)
+    shippingDetails,
+    products,
+    paymentMethod
   };
 
   const res = await placeOrder(orderData);
 
-  if (res.success) {
-    clearCart();
-    localStorage.removeItem("checkoutDetails");
-    window.location.href = "/ordersuccess";
-  } else {
-    alert("Something went wrong");
-    btn.disabled = false;
-    loader.classList.add("hidden");
+  if (!res.success) {
+    alert("Order creation failed");
+    return;
   }
+
+  // COD order
+  if (paymentMethod === "cod") {
+
+    alert("Order placed successfully!");
+    window.location.href = "/orders.html";
+    return;
+
+  }
+
+  // Online payment
+  openRazorpay(res.razorpayOrder);
+
+}
+
+// Razorpay integration
+function openRazorpay(order) {
+
+  const options = {
+
+    key: "rzp_live_SPcLScqWZHohsr", // replace with your key
+
+    amount: order.amount,
+
+    currency: order.currency,
+
+    order_id: order.id,
+
+    name: "THE RAS",
+
+    description: "Order Payment",
+
+    handler: async function (response) {
+
+      await verifyPayment(response);
+
+    }
+
+  };
+
+  const rzp = new Razorpay(options);
+
+  rzp.open();
+
+}
+
+// Verify payment on the server
+async function verifyPayment(paymentData) {
+
+  const res = await fetch("/api/payment/verify-payment", {
+
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    credentials: "include",
+
+    body: JSON.stringify(paymentData)
+
+  });
+
+
+  const data = await res.json();
+
+
+  if (data.success) {
+
+    alert("Payment Successful 🎉");
+
+    localStorage.removeItem("cart");
+
+    window.location.href = "/orders.html";
+
+  } else {
+
+    alert("Payment verification failed");
+
+  }
+
 }
 
 loadPage();

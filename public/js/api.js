@@ -270,7 +270,7 @@ try {
   // order related routes
 
   async function placeOrder(orderData) {
-  const res = await fetch(`${API_BASE_URL}/orders`, {
+  const res = await fetch(`${API_BASE_URL}/api/payment/create-order`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -278,7 +278,6 @@ try {
   });
 
   const data = await res.json();
-   return data ; 
 }
 
 

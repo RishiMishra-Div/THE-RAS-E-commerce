@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
+  
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
 
-  // 👇 Customer Billing Information
+  // Customer Billing Information
   shippingDetails: {
     firstName: String,
     lastName: String,
@@ -20,7 +21,7 @@ const orderSchema = new mongoose.Schema({
     country: String
   },
 
-  // 👇 Order Items
+  // Order Items
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
@@ -31,7 +32,7 @@ const orderSchema = new mongoose.Schema({
     }
   ],
 
-  // 👇 Price Breakdown
+  // Price Breakdown
   subtotal: Number,
   shipping: Number,
   tax: Number,
@@ -43,16 +44,28 @@ const orderSchema = new mongoose.Schema({
     default: "cod"
   },
 
+  paymentStatus: {
+    type: String,
+    enum: ["pending", "paid", "failed"],
+    default: "pending"
+  },
+
   status: {
     type: String,
     enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
     default: "pending"
   },
 
+  // Razorpay Fields
+  razorpayOrderId: String,
+  razorpayPaymentId: String,
+  razorpaySignature: String,
+
   createdAt: {
     type: Date,
     default: Date.now
   }
+
 });
 
 module.exports = mongoose.model("Order", orderSchema);
