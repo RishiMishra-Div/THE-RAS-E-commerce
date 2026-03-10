@@ -28,7 +28,6 @@ const productRouter = require('./routes/productRouter');
 const categoryRouter = require('./routes/categoryRouter');
 const orderRouter = require('./routes/orderRouter');
 const userRouter = require('./routes/userRouter');
-const adminRouter = require('./routes/adminRouter');
 const paymentRouter= require("./routes/paymentRouter");
 
 
@@ -38,7 +37,6 @@ app.use('/api/products', productRouter);
 app.use('/api/admin/categories', categoryRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/users' , userRouter);
-app.use('/admin', adminRouter);
 app.use("/api/payment", paymentRouter);
 
 // Test route

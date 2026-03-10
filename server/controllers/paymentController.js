@@ -14,12 +14,12 @@ CREATE ORDER (COD or ONLINE)
 ------------------------------------------
 */
 
-exports.createOrder = async (req, res) => {
+exports.createOrder =  async function (req, res) {
 
   try {
 
     const { products, shippingDetails, paymentMethod } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     let subtotal = 0;
     let orderItems = [];
@@ -61,9 +61,7 @@ exports.createOrder = async (req, res) => {
     CREATE ORDER IN DATABASE
     ------------------------------------------
     */
-
     const order = await Order.create({
-
       user: userId,
       shippingDetails,
 
@@ -77,7 +75,6 @@ exports.createOrder = async (req, res) => {
       paymentMethod,
 
       paymentStatus: paymentMethod === "cod" ? "pending" : "pending"
-
     });
 
 
@@ -87,7 +84,6 @@ exports.createOrder = async (req, res) => {
     IF PAYMENT METHOD = COD
     ------------------------------------------
     */
-
     if (paymentMethod === "cod") {
 
       return res.json({
@@ -105,15 +101,12 @@ exports.createOrder = async (req, res) => {
     CREATE RAZORPAY ORDER
     ------------------------------------------
     */
-
     const options = {
-
       amount: Math.round(total * 100),
 
       currency: "INR",
 
       receipt: order._id.toString()
-
     };
 
 
@@ -129,13 +122,11 @@ exports.createOrder = async (req, res) => {
 
 
     res.json({
-
       success: true,
 
       order,
 
       razorpayOrder
-
     });
 
 
@@ -145,11 +136,9 @@ exports.createOrder = async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-
       success: false,
 
       message: "Order creation failed"
-
     });
 
   }

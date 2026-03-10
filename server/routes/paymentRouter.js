@@ -4,16 +4,17 @@ const express = require("express");
 const router = express.Router();
 
 const {createOrder,verifyPayment,getMyOrders,getOrder} = require("../controllers/paymentController");
+const isloggedIn = require("../middlewares/isloggedIn");
 
 
 
-router.post("/create-order", createOrder);
+router.post("/create-order", isloggedIn, createOrder);
 
-router.post("/verify-payment", verifyPayment);
+router.post("/verify-payment", isloggedIn, verifyPayment);
 
-router.get("/my-orders", getMyOrders);
+router.get("/my-orders", isloggedIn, getMyOrders);
 
-router.get("/:id", getOrder);
+router.get("/:id", isloggedIn, getOrder);
 
 
 
