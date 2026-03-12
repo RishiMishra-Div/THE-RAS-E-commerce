@@ -174,6 +174,7 @@ async function placeOrderNow() {
   if (paymentMethod === "cod") {
 
     alert("Order placed successfully!");
+    localStorage.removeItem("cart");
     window.location.href = "/orders.html";
     return;
 
@@ -218,7 +219,7 @@ function openRazorpay(order) {
 // Verify payment on the server
 async function verifyPayment(paymentData) {
 
-  const res = await fetch("/api/payment/verify-payment", {
+  const res = await fetch(`${API_BASE_URL}/payment/verify-payment`, {
 
     method: "POST",
 
