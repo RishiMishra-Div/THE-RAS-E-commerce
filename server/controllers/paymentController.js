@@ -49,7 +49,7 @@ exports.createOrder =  async function (req, res) {
 
     }
 
-    const shipping = 100;
+    const shipping = 0;
     const tax = subtotal * 0.05;
 
     const total = subtotal + shipping + tax;
